@@ -1,0 +1,245 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AudienceSelector from '../components/AudienceSelector.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ProcessSection from '../components/ProcessSection.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { siteConfig } from '../data/site';
+import { getFeaturedHomePortfolio } from '../data/portfolio';
+
+const featuredDemos = getFeaturedHomePortfolio();
+---
+
+<BaseLayout
+  title="Fagon — Studio Sáng Tạo × Công Nghệ | Ảnh, Video, Slide, Website & Trò chơi tương tác"
+  description="Ảnh, video, slide và website — Fagon giúp bạn biến ý tưởng thành sản phẩm phù hợp với mục tiêu. Chọn nhu cầu của bạn: Giáo viên, Người bán hàng, Văn phòng, Sinh viên hoặc Sáng tạo & cá nhân."
+>
+  <!-- 1. Hero & Audience Selection (Section 5) -->
+  <section class="section home-hero">
+    <div class="container">
+      <div class="home-hero__intro">
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>{siteConfig.heroBadge}</span>
+        </div>
+
+        <h1 class="home-hero__title">{siteConfig.heroTitle}</h1>
+        <p class="home-hero__description">{siteConfig.heroDescription}</p>
+      </div>
+
+      <AudienceSelector />
+    </div>
+  </section>
+
+  <!-- 2. Featured Demos (Concise selection with filter tabs) -->
+  <section class="section" id="san-pham-mau">
+    <div class="container">
+      <div class="section-header section-header--split">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow__dot" aria-hidden="true"></span>
+            <span>SẢN PHẨM MẪU TIÊU BIỂU</span>
+          </div>
+          <h2>Một số demo minh họa theo từng mục tiêu</h2>
+        </div>
+        <p class="home-demos__sub">
+          Mỗi trang nhu cầu đều có bộ demo riêng. Dưới đây là 4 sản phẩm mẫu tiêu biểu đại diện cho trò chơi lớp học, hình ảnh lên mẫu thời trang, slide báo cáo và thiết kế nhân vật.
+        </p>
+      </div>
+
+      <!-- Filter Bar for Featured Demos -->
+      <div class="demo-filter-bar" role="group" aria-label="Bộ lọc sản phẩm mẫu theo nhóm">
+        <button type="button" class="demo-filter-btn is-active" data-filter-demo="all" aria-pressed="true">
+          Tất cả ({featuredDemos.length})
+        </button>
+        <button type="button" class="demo-filter-btn" data-filter-demo="giao-vien" aria-pressed="false">
+          Giáo viên
+        </button>
+        <button type="button" class="demo-filter-btn" data-filter-demo="nguoi-ban-hang" aria-pressed="false">
+          Người bán hàng
+        </button>
+        <button type="button" class="demo-filter-btn" data-filter-demo="van-phong" aria-pressed="false">
+          Văn phòng
+        </button>
+        <button type="button" class="demo-filter-btn" data-filter-demo="sang-tao" aria-pressed="false">
+          Sáng tạo &amp; Cá nhân
+        </button>
+      </div>
+
+      <div class="grid-2" id="home-demo-grid">
+        {
+          featuredDemos.map((item, idx) => (
+            <div class="home-demo-item" data-demo-audiences={item.audienceIds.join(',')}>
+              <ProjectCard item={item} priorityLoad={idx < 2} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. About Fagon (Section 12: "Về Fagon" under "Người sáng lập Fagon") -->
+  <section class="section section--dark" id="ve-fagon">
+    <div class="container about-fagon">
+      <div class="about-fagon__left">
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>VỀ FAGON</span>
+        </div>
+        <h2>Từ ý tưởng tốt đến một cách thể hiện xứng đáng</h2>
+        <div class="about-fagon__author">
+          <span class="badge badge--lime">{siteConfig.founderStory.authorLabel}</span>
+          <span class="about-fagon__draft-note">{siteConfig.founderStory.statusNote}</span>
+        </div>
+      </div>
+
+      <div class="about-fagon__right">
+        <blockquote class="founder-quote">
+          {siteConfig.founderStory.paragraphs.map((p) => <p>{p}</p>)}
+        </blockquote>
+        <div class="about-fagon__actions">
+          <a href="/dich-vu" class="btn btn--primary">
+            Khám phá tất cả dịch vụ →
+          </a>
+          <a href="#yeu-cau-tu-van" class="btn btn--ghost-light">
+            Trao đổi trực tiếp cùng Fagon
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. General 3-Step Process (Section 11) -->
+  <ProcessSection sectionId="quy-trinh" />
+
+  <!-- 5. General Consultation Form (Section 13) -->
+  <ContactForm defaultAudienceId="khac" />
+</BaseLayout>
+
+<script>
+  function initHomeDemoFilter() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter-demo]');
+    const items = document.querySelectorAll<HTMLElement>('.home-demo-item');
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filterVal = btn.getAttribute('data-filter-demo') || 'all';
+        buttons.forEach((b) => {
+          const active = b === btn;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+
+        items.forEach((el) => {
+          const audList = (el.getAttribute('data-demo-audiences') || '').split(',');
+          const match = filterVal === 'all' || audList.includes(filterVal);
+          el.hidden = !match;
+        });
+      });
+    });
+  }
+
+  initHomeDemoFilter();
+</script>
+
+<style>
+  .home-hero {
+    padding-block: clamp(2.75rem, 6vw, 5rem);
+    background: radial-gradient(circle at 85% 15%, rgba(197, 245, 60, 0.22), transparent 42%),
+      var(--color-cream);
+  }
+
+  .home-hero__intro {
+    max-width: 780px;
+  }
+
+  .home-hero__title {
+    margin-bottom: 0.65rem;
+  }
+
+  .home-hero__description {
+    font-size: clamp(1.1rem, 1.8vw, 1.32rem);
+    color: var(--color-text-muted);
+    margin-bottom: 0;
+  }
+
+  .home-demos__sub {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .demo-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .demo-filter-btn {
+    min-height: 44px;
+    padding: 0.45rem 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.88rem;
+    font-weight: 700;
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .demo-filter-btn:hover {
+    background-color: var(--color-cream-alt);
+  }
+
+  .demo-filter-btn.is-active {
+    background-color: var(--color-lime);
+  }
+
+  .about-fagon {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .about-fagon {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 3.5rem;
+    }
+  }
+
+  .about-fagon__author {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1rem;
+  }
+
+  .about-fagon__draft-note {
+    font-size: 0.82rem;
+    color: #b7bab0;
+  }
+
+  .founder-quote {
+    margin: 0 0 1.75rem 0;
+    padding: 1.5rem 1.75rem;
+    background-color: rgba(246, 243, 235, 0.06);
+    border-left: 4px solid var(--color-lime);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: 1.05rem;
+  }
+
+  .founder-quote p:last-child {
+    margin-bottom: 0;
+  }
+
+  .about-fagon__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+</style>

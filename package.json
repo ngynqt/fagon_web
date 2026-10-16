@@ -1,0 +1,28 @@
+{
+  "name": "fagon-web",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fagon — Studio Sáng Tạo × Công Nghệ (Ảnh, Video, Slide, Website & Trò chơi tương tác)",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@10.6.5",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "build:fast": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node scripts/verify.mjs",
+    "backup": "node scripts/backup.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.5.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.8.2"
+  }
+}

@@ -1,0 +1,100 @@
+---
+import type { AudienceConfig } from '../data/audiences';
+
+interface Props {
+  audience: AudienceConfig;
+}
+
+const { audience } = Astro.props;
+---
+
+<section class="section" id="dich-vu-nhom">
+  <div class="container">
+    <div class="section-header section-header--split">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>DỊCH VỤ CHO {audience.title.toUpperCase()}</span>
+        </div>
+        <h2>Giải pháp thiết kế &amp; sản xuất đúng trọng tâm</h2>
+      </div>
+      <p class="section-header__sub">
+        Chọn hạng mục bạn cần bên dưới để điền sẵn vào biểu mẫu tư vấn, hoặc xem <a href="/dich-vu">tất cả dịch vụ theo đầu ra</a>.
+      </p>
+    </div>
+
+    <div class="grid-3">
+      {
+        audience.services.map((srv, idx) => (
+          <article class="card service-card">
+            <div>
+              <div class="service-card__top">
+                <span class="service-card__index">0{idx + 1}</span>
+                <span class="badge badge--muted">{srv.deliverableTag}</span>
+              </div>
+              <h3 class="service-card__title">{srv.title}</h3>
+              <p class="service-card__desc">{srv.description}</p>
+            </div>
+            <div class="service-card__footer">
+              <a
+                href={`#yeu-cau-tu-van`}
+                class="btn btn--outline service-card__btn"
+                data-select-audience={audience.id}
+                data-select-service={srv.linkedServiceId}
+                data-select-service-label={srv.title}
+              >
+                Chọn dịch vụ này →
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-header__sub {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .service-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .service-card__index {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .service-card__title {
+    margin-bottom: 0.5rem;
+  }
+
+  .service-card__desc {
+    color: var(--color-text-muted);
+    font-size: 0.94rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .service-card__footer {
+    padding-top: 0.85rem;
+    border-top: 1px dashed var(--color-border);
+  }
+
+  .service-card__btn {
+    width: 100%;
+    font-size: 0.88rem;
+  }
+
+  .service-card__btn:hover {
+    background-color: var(--color-lime);
+  }
+</style>

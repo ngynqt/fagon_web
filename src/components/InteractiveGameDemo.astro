@@ -1,0 +1,550 @@
+---
+// Interactive Classroom Game Demo for Teachers (Section 7.1)
+// Lightweight, no login/account, no student PII collection, full touch & keyboard support.
+---
+
+<div class="edu-game-box" id="tro-choi-mau" role="region" aria-labelledby="edu-game-title">
+  <div class="edu-game-box__header">
+    <div class="edu-game-box__badges">
+      <span class="badge badge--lime">Demo minh họa</span>
+      <span class="badge badge--dark">Không thu thập thông tin học sinh</span>
+    </div>
+    <h3 id="edu-game-title" class="edu-game-box__title">
+      Trò chơi lớp học mẫu: Khám phá Chu trình Nước &amp; Năng lượng
+    </h3>
+    <p class="edu-game-box__disclaimer">
+      <strong>Lưu ý:</strong> Đây là <em>Demo minh họa</em> thao tác trò chơi tương tác trên web (không tuyên bố là học liệu đã thẩm định chính thức theo chương trình học). Khi đặt làm riêng, toàn bộ câu hỏi và hình ảnh sẽ bám sát bài dạy do thầy cô cung cấp.
+    </p>
+  </div>
+
+  <!-- Game Instructions -->
+  <div class="edu-game-instructions">
+    <strong>Hướng dẫn thao tác (Điện thoại, Máy chiếu &amp; Bàn phím):</strong>
+    <ul>
+      <li>Chạm trực tiếp vào đáp án trên màn hình cảm ứng, hoặc dùng phím <code>Tab</code> + <code>Enter</code> / phím số <code>1–4</code> trên bàn phím.</li>
+      <li>Mỗi câu trả lời đều hiển thị phản hồi Đúng / Sai kèm giải thích ngắn ngay lập tức.</li>
+    </ul>
+  </div>
+
+  <!-- Interactive Game Stage -->
+  <div class="edu-game-stage" data-game-state="playing">
+    <div class="edu-game-topbar">
+      <div class="edu-game-progress">
+        <span id="game-step-indicator">Câu hỏi 1 / 4</span>
+        <div class="edu-game-progress__bar" aria-hidden="true">
+          <div id="game-progress-fill" class="edu-game-progress__fill" style="width: 25%"></div>
+        </div>
+      </div>
+      <div class="edu-game-score" aria-live="polite">
+        Điểm: <strong id="game-score-value">0</strong> / 4
+      </div>
+    </div>
+
+    <!-- Question View -->
+    <div id="game-question-panel" class="edu-game-question-panel">
+      <p class="edu-game-topic" id="game-question-topic">Chủ đề: Chu trình nước trong tự nhiên</p>
+      <h4 class="edu-game-prompt" id="game-question-text">
+        Câu 1: Hiện tượng nước từ biển, sông, hồ chuyển thành hơi nước bay lên cao dưới tác dụng của ánh nắng mặt trời gọi là gì?
+      </h4>
+
+      <div
+        id="game-options-list"
+        class="edu-game-options"
+        role="group"
+        aria-labelledby="game-question-text"
+      >
+        <button type="button" class="edu-game-option" data-option-index="0">
+          <span class="edu-game-option__key">A</span>
+          <span class="edu-game-option__text">Sự bay hơi (Bốc hơi)</span>
+        </button>
+        <button type="button" class="edu-game-option" data-option-index="1">
+          <span class="edu-game-option__key">B</span>
+          <span class="edu-game-option__text">Sự ngưng tụ</span>
+        </button>
+        <button type="button" class="edu-game-option" data-option-index="2">
+          <span class="edu-game-option__key">C</span>
+          <span class="edu-game-option__text">Sự đông đặc</span>
+        </button>
+        <button type="button" class="edu-game-option" data-option-index="3">
+          <span class="edu-game-option__key">D</span>
+          <span class="edu-game-option__text">Sự nóng chảy</span>
+        </button>
+      </div>
+
+      <!-- Feedback Box -->
+      <div id="game-feedback-box" class="edu-game-feedback" role="status" aria-live="polite" hidden>
+        <p id="game-feedback-title" class="edu-game-feedback__title"></p>
+        <p id="game-feedback-explanation" class="edu-game-feedback__explanation"></p>
+        <div class="edu-game-feedback__actions">
+          <button type="button" id="game-next-btn" class="btn btn--primary">
+            Câu tiếp theo →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary View (shown after completing all questions) -->
+    <div id="game-summary-panel" class="edu-game-summary" hidden>
+      <span class="badge badge--lime">Hoàn thành lượt chơi</span>
+      <h4 class="edu-game-summary__title" id="game-summary-headline">
+        Kết quả: Bạn trả lời đúng 4 / 4 câu hỏi!
+      </h4>
+      <p class="edu-game-summary__desc" id="game-summary-message">
+        Học sinh đã ôn tập xong các khái niệm cơ bản về Chu trình nước và Năng lượng sạch.
+      </p>
+      <div class="edu-game-summary__actions">
+        <button type="button" id="game-restart-btn" class="btn btn--primary">
+          Chơi lại từ đầu ↻
+        </button>
+        <a
+          href="#yeu-cau-tu-van"
+          class="btn btn--outline"
+          data-select-audience="giao-vien"
+          data-select-service="web-tro-choi-giao-vien"
+          data-select-service-label="Web trò chơi tương tác cho giáo viên"
+        >
+          Đặt làm trò chơi theo bài dạy của bạn →
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface QuizQuestion {
+    topic: string;
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+  }
+
+  const QUESTIONS: QuizQuestion[] = [
+    {
+      topic: 'Chủ đề 1: Chu trình nước trong tự nhiên',
+      question:
+        'Câu 1: Hiện tượng nước từ biển, sông, hồ chuyển thành hơi nước bay lên cao dưới tác dụng của ánh nắng mặt trời gọi là gì?',
+      options: ['Sự bay hơi (Bốc hơi)', 'Sự ngưng tụ', 'Sự đông đặc', 'Sự nóng chảy'],
+      correctIndex: 0,
+      explanation:
+        'Chính xác! Nhiệt lượng từ Mặt Trời làm nước ở bề mặt biển, sông, hồ bay hơi thành hơi nước trong khí quyển.',
+    },
+    {
+      topic: 'Chủ đề 2: Hình thành mây và mưa',
+      question:
+        'Câu 2: Khi hơi nước bay lên cao gặp không khí lạnh, chúng tạo thành những hạt nước nhỏ li ti hợp thành đám mây. Quá trình này là:',
+      options: ['Sự bay hơi', 'Sự ngưng tụ', 'Sự quang hợp', 'Sự thẩm thấu'],
+      correctIndex: 1,
+      explanation:
+        'Đúng rồi! Hơi nước gặp lạnh trên cao sẽ ngưng tụ thành các hạt nước nhỏ tạo nên mây.',
+    },
+    {
+      topic: 'Chủ đề 3: Năng lượng tái tạo',
+      question:
+        'Câu 3: Nguồn năng lượng nào dưới đây thuộc nhóm năng lượng tái tạo thân thiện với môi trường?',
+      options: ['Than đá', 'Dầu mỏ', 'Năng lượng Mặt Trời và năng lượng Gió', 'Khí đốt tự nhiên'],
+      correctIndex: 2,
+      explanation:
+        'Chính xác! Năng lượng Mặt Trời và năng lượng Gió là nguồn năng lượng tái tạo, không gây phát thải khí nhà kính như nhiên liệu hóa thạch.',
+    },
+    {
+      topic: 'Chủ đề 4: Ghép khái niệm Sinh học',
+      question:
+        'Câu 4: Trong chuỗi thức ăn tự nhiên, thực vật xanh đóng vai trò gì nhờ khả năng tự tổng hợp chất hữu cơ qua quang hợp?',
+      options: [
+        'Sinh vật tiêu thụ bậc 1',
+        'Sinh vật sản xuất',
+        'Sinh vật phân giải',
+        'Sinh vật ký sinh',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Chính xác! Cây xanh là Sinh vật sản xuất, mở đầu cho chuỗi thức ăn bằng cách chuyển hóa quang năng thành hóa năng.',
+    },
+  ];
+
+  const KEYS = ['A', 'B', 'C', 'D'];
+
+  function initEduGame() {
+    const container = document.getElementById('tro-choi-mau');
+    if (!container) return;
+
+    const stepIndicator = document.getElementById('game-step-indicator');
+    const progressFill = document.getElementById('game-progress-fill');
+    const scoreValue = document.getElementById('game-score-value');
+    const questionPanel = document.getElementById('game-question-panel');
+    const topicEl = document.getElementById('game-question-topic');
+    const questionTextEl = document.getElementById('game-question-text');
+    const optionsListEl = document.getElementById('game-options-list');
+    const feedbackBox = document.getElementById('game-feedback-box');
+    const feedbackTitle = document.getElementById('game-feedback-title');
+    const feedbackExplanation = document.getElementById('game-feedback-explanation');
+    const nextBtn = document.getElementById('game-next-btn') as HTMLButtonElement | null;
+    const summaryPanel = document.getElementById('game-summary-panel');
+    const summaryHeadline = document.getElementById('game-summary-headline');
+    const summaryMessage = document.getElementById('game-summary-message');
+    const restartBtn = document.getElementById('game-restart-btn');
+
+    let currentIdx = 0;
+    let score = 0;
+    let answered = false;
+
+    function renderQuestion() {
+      const q = QUESTIONS[currentIdx];
+      answered = false;
+
+      if (stepIndicator) {
+        stepIndicator.textContent = `Câu hỏi ${currentIdx + 1} / ${QUESTIONS.length}`;
+      }
+      if (progressFill) {
+        progressFill.style.width = `${((currentIdx + 1) / QUESTIONS.length) * 100}%`;
+      }
+      if (scoreValue) {
+        scoreValue.textContent = String(score);
+      }
+      if (topicEl) topicEl.textContent = q.topic;
+      if (questionTextEl) questionTextEl.textContent = q.question;
+      if (feedbackBox) {
+        feedbackBox.hidden = true;
+        feedbackBox.className = 'edu-game-feedback';
+      }
+      if (questionPanel) questionPanel.hidden = false;
+      if (summaryPanel) summaryPanel.hidden = true;
+
+      if (optionsListEl) {
+        optionsListEl.innerHTML = '';
+        q.options.forEach((optText, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'edu-game-option';
+          btn.setAttribute('data-option-index', String(idx));
+
+          const keySpan = document.createElement('span');
+          keySpan.className = 'edu-game-option__key';
+          keySpan.textContent = KEYS[idx] || String(idx + 1);
+
+          const textSpan = document.createElement('span');
+          textSpan.className = 'edu-game-option__text';
+          textSpan.textContent = optText;
+
+          btn.appendChild(keySpan);
+          btn.appendChild(textSpan);
+          btn.addEventListener('click', () => handleSelectOption(idx));
+          optionsListEl.appendChild(btn);
+        });
+      }
+    }
+
+    function handleSelectOption(selectedIndex: number) {
+      if (answered) return;
+      answered = true;
+
+      const q = QUESTIONS[currentIdx];
+      const isCorrect = selectedIndex === q.correctIndex;
+      if (isCorrect) {
+        score += 1;
+        if (scoreValue) scoreValue.textContent = String(score);
+      }
+
+      const buttons = optionsListEl?.querySelectorAll<HTMLButtonElement>('.edu-game-option');
+      buttons?.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === q.correctIndex) {
+          btn.classList.add('is-correct');
+        } else if (idx === selectedIndex && !isCorrect) {
+          btn.classList.add('is-wrong');
+        }
+      });
+
+      if (feedbackBox && feedbackTitle && feedbackExplanation && nextBtn) {
+        feedbackBox.hidden = false;
+        feedbackBox.className = `edu-game-feedback ${isCorrect ? 'is-correct' : 'is-wrong'}`;
+        feedbackTitle.textContent = isCorrect
+          ? '✓ Chính xác! Bạn đã chọn đúng đáp án.'
+          : `✗ Chưa chính xác. Đáp án đúng là ${KEYS[q.correctIndex]}: ${q.options[q.correctIndex]}.`;
+        feedbackExplanation.textContent = q.explanation;
+        nextBtn.textContent =
+          currentIdx < QUESTIONS.length - 1 ? 'Câu tiếp theo →' : 'Xem kết quả chung cuộc →';
+        nextBtn.focus();
+      }
+    }
+
+    function showSummary() {
+      if (questionPanel) questionPanel.hidden = true;
+      if (summaryPanel) summaryPanel.hidden = false;
+      if (summaryHeadline) {
+        summaryHeadline.textContent = `Kết quả: Bạn trả lời đúng ${score} / ${QUESTIONS.length} câu hỏi!`;
+      }
+      if (summaryMessage) {
+        summaryMessage.textContent =
+          score === QUESTIONS.length
+            ? 'Xuất sắc! Bạn đã trả lời chính xác toàn bộ các câu hỏi minh họa.'
+            : 'Bạn có thể bấm "Chơi lại từ đầu" để thử lại các câu hỏi vừa rồi.';
+      }
+      restartBtn?.focus();
+    }
+
+    nextBtn?.addEventListener('click', () => {
+      if (currentIdx < QUESTIONS.length - 1) {
+        currentIdx += 1;
+        renderQuestion();
+        const firstOpt = optionsListEl?.querySelector<HTMLButtonElement>('.edu-game-option');
+        firstOpt?.focus();
+      } else {
+        showSummary();
+      }
+    });
+
+    restartBtn?.addEventListener('click', () => {
+      currentIdx = 0;
+      score = 0;
+      renderQuestion();
+      const firstOpt = optionsListEl?.querySelector<HTMLButtonElement>('.edu-game-option');
+      firstOpt?.focus();
+    });
+
+    // Keyboard shortcut 1-4 when focus is inside game container
+    container.addEventListener('keydown', (e) => {
+      if (answered || summaryPanel?.hidden === false) return;
+      if (['1', '2', '3', '4'].includes(e.key)) {
+        const idx = Number(e.key) - 1;
+        handleSelectOption(idx);
+      }
+    });
+
+    renderQuestion();
+  }
+
+  initEduGame();
+</script>
+
+<style>
+  .edu-game-box {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.35rem, 3vw, 2.25rem);
+    margin-bottom: 2.5rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .edu-game-box__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .edu-game-box__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+    margin-bottom: 0.5rem;
+  }
+
+  .edu-game-box__disclaimer {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    background-color: var(--color-cream);
+    border-left: 4px solid var(--color-ink);
+    padding: 0.65rem 0.95rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: 1.15rem;
+  }
+
+  .edu-game-instructions {
+    background-color: var(--color-cream-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1.1rem;
+    font-size: 0.88rem;
+    margin-bottom: 1.35rem;
+  }
+
+  .edu-game-instructions ul {
+    margin: 0.35rem 0 0 0;
+    padding-left: 1.2rem;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .edu-game-stage {
+    background-color: var(--color-cream);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: clamp(1.15rem, 2.5vw, 1.75rem);
+  }
+
+  .edu-game-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .edu-game-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .edu-game-progress__bar {
+    width: 120px;
+    height: 10px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+  }
+
+  .edu-game-progress__fill {
+    height: 100%;
+    background-color: var(--color-lime);
+    transition: width 0.2s ease;
+  }
+
+  .edu-game-score {
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.9rem;
+  }
+
+  .edu-game-score strong {
+    color: var(--color-lime);
+  }
+
+  .edu-game-topic {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .edu-game-prompt {
+    font-size: clamp(1.08rem, 1.8vw, 1.28rem);
+    line-height: 1.45;
+    margin-bottom: 1.25rem;
+  }
+
+  .edu-game-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 680px) {
+    .edu-game-options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  :global(.edu-game-option) {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 54px;
+    padding: 0.75rem 1rem;
+    background-color: var(--color-surface);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 2px 0 var(--color-ink);
+    transition: background-color 0.15s ease, transform 0.1s ease;
+  }
+
+  :global(.edu-game-option:hover:not(:disabled)) {
+    background-color: var(--color-cream-alt);
+    transform: translateY(-1px);
+  }
+
+  :global(.edu-game-option__key) {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  :global(.edu-game-option.is-correct) {
+    background-color: var(--color-lime) !important;
+    border-width: 2px;
+    font-weight: 700;
+  }
+
+  :global(.edu-game-option.is-wrong) {
+    background-color: var(--color-error-bg) !important;
+    border-color: var(--color-error) !important;
+    color: var(--color-error);
+  }
+
+  .edu-game-feedback {
+    margin-top: 1.25rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--color-ink);
+    background-color: var(--color-surface);
+  }
+
+  .edu-game-feedback.is-correct {
+    border-left: 6px solid #2e7d32;
+  }
+
+  .edu-game-feedback.is-wrong {
+    border-left: 6px solid var(--color-error);
+  }
+
+  .edu-game-feedback__title {
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+  }
+
+  .edu-game-feedback__explanation {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.9rem;
+  }
+
+  .edu-game-summary {
+    text-align: center;
+    padding: 1.5rem 1rem;
+  }
+
+  .edu-game-summary__title {
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+    margin: 0.65rem 0 0.5rem 0;
+  }
+
+  .edu-game-summary__desc {
+    color: var(--color-text-muted);
+    max-width: 48ch;
+    margin: 0 auto 1.35rem auto;
+  }
+
+  .edu-game-summary__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+</style>

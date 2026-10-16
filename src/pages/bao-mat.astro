@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../data/site';
+---
+
+<BaseLayout
+  title="Thông tin Bảo mật & Tiếp nhận Yêu cầu | Fagon"
+  description="Chính sách bảo mật dữ liệu biểu mẫu, nguyên tắc tiếp nhận yêu cầu tư vấn, quyền riêng tư học liệu trẻ em và thông tin nhà cung cấp biểu mẫu tại Fagon."
+>
+  <section class="section privacy-page">
+    <div class="container privacy-container">
+      <div class="eyebrow">
+        <span class="eyebrow__dot" aria-hidden="true"></span>
+        <span>MINH BẠCH DỮ LIỆU &amp; QUYỀN RIÊNG TƯ</span>
+      </div>
+      <h1>Thông tin bảo mật và tiếp nhận yêu cầu</h1>
+      <p class="privacy-lead">
+        Trang này giải thích rõ những thông tin nào được thu thập khi bạn liên hệ Fagon, cách dữ liệu được chuyển tới hộp thư tiếp nhận và nguyên tắc bảo vệ quyền riêng tư của khách hàng.
+      </p>
+
+      <div class="privacy-cards">
+        <article class="card privacy-card">
+          <h2>1. Dữ liệu thu thập qua biểu mẫu tư vấn</h2>
+          <p>
+            Khi bạn chủ động điền và gửi biểu mẫu tư vấn trên website Fagon, các trường thông tin được tiếp nhận bao gồm:
+          </p>
+          <ul>
+            <li><strong>Thông tin định danh &amp; liên hệ:</strong> Tên của bạn, địa chỉ Email và/hoặc Số điện thoại / Telegram để Fagon phản hồi báo giá.</li>
+            <li><strong>Thông tin dự án:</strong> Nhóm nhu cầu, dịch vụ quan tâm, mô tả yêu cầu, ngân sách dự kiến, ngày cần nhận và các thông tin bổ sung theo nhóm (môn học/khối lớp, ngành hàng shop, mục đích báo cáo, tình trạng nội dung...).</li>
+            <li><strong>Đường dẫn tài liệu tham khảo (nếu bạn cung cấp):</strong> Link Google Drive, OneDrive hoặc link gian hàng/bài mẫu.</li>
+          </ul>
+          <p class="privacy-note">
+            <strong>Không thu tệp tải lên trực tiếp:</strong> Trong phiên bản hiện tại, website không thu nhận file ảnh hay tài liệu đính kèm trực tiếp trên biểu mẫu để tránh rủi ro lưu trữ tệp trung gian.
+          </p>
+        </article>
+
+        <article class="card privacy-card">
+          <h2>2. Nơi nhận yêu cầu &amp; Nhà cung cấp dịch vụ biểu mẫu</h2>
+          <p>
+            Mọi yêu cầu tư vấn hợp lệ đều hướng tới hộp thư chính thức của Fagon tại địa chỉ:{' '}
+            <a href={`mailto:${siteConfig.contact.email}`}><strong>{siteConfig.contact.email}</strong></a>.
+          </p>
+          <ul>
+            <li>
+              <strong>Về lưu trữ của bên thứ ba:</strong> Fagon <strong>không hứa hẹn "không lưu dữ liệu"</strong> khi sử dụng dịch vụ chuyển tiếp biểu mẫu (như Web3Forms, Formspree hoặc hạ tầng Cloudflare). Khi dịch vụ chuyển tiếp biểu mẫu được kích hoạt, nội dung bạn gửi sẽ đi qua máy chủ của nhà cung cấp đó để chuyển về email <code>{siteConfig.contact.email}</code> theo chính sách lưu nhật ký gửi thư của nhà cung cấp.
+            </li>
+            <li>
+              <strong>Trạng thái khi chưa bật khóa nhận đơn tự động:</strong> Khi biến môi trường nhận đơn chưa được cấu hình, dữ liệu bạn nhập chỉ nằm trên trình duyệt hiện tại của bạn để hỗ trợ sao chép hoặc mở ứng dụng Email cá nhân gửi trực tiếp, không tự động truyền đi ngầm.
+            </li>
+            <li>
+              <strong>Không ghi log công khai:</strong> Fagon không ghi họ tên, số điện thoại, email hay nội dung tin nhắn của khách vào bất kỳ trang nhật ký công khai nào.
+            </li>
+          </ul>
+        </article>
+
+        <article class="card privacy-card">
+          <h2>3. Trò chơi mẫu cho giáo viên &amp; Quyền riêng tư trẻ em</h2>
+          <p>
+            Đối với các trò chơi tương tác minh họa trên trang <a href="/giao-vien">Giáo viên</a>:
+          </p>
+          <ul>
+            <li>Hoạt động hoàn toàn ngay trên trình duyệt của thiết bị đang mở.</li>
+            <li><strong>Không yêu cầu đăng nhập, không thu thập tên, trường lớp, hình ảnh hay bất kỳ dữ liệu cá nhân nào của học sinh / trẻ em.</strong></li>
+          </ul>
+        </article>
+
+        <article class="card privacy-card">
+          <h2>4. Lưu trữ trên trình duyệt (localStorage) &amp; Công cụ theo dõi</h2>
+          <ul>
+            <li>
+              <strong>Bộ nhớ trình duyệt (localStorage):</strong> Website chỉ lưu duy nhất mã nhóm nhu cầu gần nhất bạn đã chọn (ví dụ: <code>giao-vien</code> hoặc <code>nguoi-ban-hang</code>) trong khóa <code>fagon_last_audience</code> để hiển thị nút gợi ý <em>"Tiếp tục với [nhóm]"</em> ở lần ghé thăm sau. Không lưu thông tin cá nhân và không tự động chuyển hướng cưỡng bức.
+            </li>
+            <li>
+              <strong>Không cài đặt theo dõi mặc định:</strong> Website hiện tại không cài đặt mã theo dõi quảng cáo hay công cụ phân tích hành vi mặc định. Nếu trong tương lai có bổ sung công cụ đo lường cơ bản, Fagon cam kết không gửi tên, email, số điện thoại hoặc nội dung tin nhắn vào sự kiện thống kê.
+            </li>
+          </ul>
+        </article>
+
+        <article class="card privacy-card">
+          <h2>5. Yêu cầu chỉnh sửa hoặc xóa thông tin đã gửi</h2>
+          <p>
+            Nếu bạn đã gửi yêu cầu tư vấn và muốn cập nhật, đính chính hoặc yêu cầu xóa toàn bộ thông tin trao đổi cùng tài liệu tham khảo khỏi hộp thư của Fagon, vui lòng liên hệ trực tiếp:
+          </p>
+          <ul>
+            <li><strong>Email:</strong> <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a></li>
+            <li><strong>Facebook:</strong> <a href={siteConfig.contact.facebookUrl} target="_blank" rel="noopener noreferrer">{siteConfig.contact.facebookLabel}</a></li>
+            <li><strong>Số Telegram:</strong> {siteConfig.contact.telegramPhone}</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .privacy-container {
+    max-width: 900px;
+  }
+
+  .privacy-lead {
+    font-size: 1.08rem;
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .privacy-cards {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .privacy-card h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+    margin-bottom: 0.65rem;
+  }
+
+  .privacy-card p,
+  .privacy-card ul {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .privacy-card ul {
+    margin: 0 0 0.75rem 0;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .privacy-note {
+    background-color: var(--color-cream);
+    border-left: 4px solid var(--color-lime);
+    padding: 0.75rem 1rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 0.5rem 0 0 0;
+  }
+</style>

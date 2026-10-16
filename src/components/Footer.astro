@@ -1,0 +1,438 @@
+---
+import { audiences } from '../data/audiences';
+import { siteConfig } from '../data/site';
+
+const { contact } = siteConfig;
+---
+
+<footer class="site-footer" id="lien-he">
+  <div class="container">
+    <!-- Direct Contact Callout Box (Section 14) -->
+    <div class="contact-banner">
+      <div class="contact-banner__info">
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>LIÊN HỆ TRỰC TIẾP</span>
+        </div>
+        <h2 class="contact-banner__title">Sẵn sàng trao đổi về sản phẩm bạn đang cần?</h2>
+        <p class="contact-banner__desc">
+          Bạn có thể gửi yêu cầu qua biểu mẫu tư vấn hoặc nhắn trực tiếp cho Fagon qua các kênh dưới đây.
+        </p>
+        <div class="contact-banner__primary-actions">
+          <a href="#yeu-cau-tu-van" class="btn btn--primary">
+            Gửi yêu cầu tư vấn
+          </a>
+          <a
+            href={contact.facebookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn--outline"
+          >
+            Nhắn qua Facebook
+          </a>
+          <a href={`mailto:${contact.email}`} class="btn btn--outline">
+            Gửi Email: {contact.email}
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-channels" aria-label="Thông tin liên hệ chi tiết">
+        <div class="contact-channel-card">
+          <span class="contact-channel-card__label">Email nhận yêu cầu</span>
+          <a href={`mailto:${contact.email}`} class="contact-channel-card__value">
+            {contact.email}
+          </a>
+          <span class="contact-channel-card__note">Gửi kèm link tài liệu hoặc mô tả chi tiết</span>
+        </div>
+
+        <div class="contact-channel-card">
+          <span class="contact-channel-card__label">Facebook Fanpage</span>
+          <a
+            href={contact.facebookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-channel-card__value"
+          >
+            {contact.facebookLabel}
+          </a>
+          <span class="contact-channel-card__note">Trao đổi nhanh và xem cập nhật mới</span>
+        </div>
+
+        <div class="contact-channel-card contact-channel-card--telegram">
+          <div class="contact-channel-card__row">
+            <div>
+              <span class="contact-channel-card__label">Số Telegram (chưa dùng username)</span>
+              <strong class="contact-channel-card__value" id="telegram-phone-display">
+                {contact.telegramPhone}
+              </strong>
+            </div>
+            <button
+              type="button"
+              class="btn btn--dark btn-copy-telegram"
+              data-copy-telegram={contact.telegramPhone}
+              aria-describedby="telegram-copy-status"
+            >
+              Sao chép số Telegram
+            </button>
+          </div>
+          <span class="contact-channel-card__note">{contact.telegramNote}</span>
+          <p
+            id="telegram-copy-status"
+            class="telegram-copy-feedback"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Navigation Grid -->
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <a href="/" class="site-footer__logo" aria-label="Fagon — Về trang chủ">
+          <span class="site-footer__logo-mark" aria-hidden="true">
+            <img
+              src="/assets/fagon-mark-white.png"
+              alt="Fagon Studio Logo"
+              width="36"
+              height="37"
+              class="site-footer__logo-img"
+              loading="lazy"
+              decoding="async"
+            />
+          </span>
+          <span>{siteConfig.brandName}</span>
+        </a>
+        <p class="site-footer__tagline">
+          Studio sáng tạo do một người sáng lập — kết hợp mỹ thuật và công nghệ để thực hiện ảnh, video, slide, website và trò chơi tương tác.
+        </p>
+      </div>
+
+      <nav class="site-footer__col" aria-label="Nhóm nhu cầu">
+        <h3 class="site-footer__heading">Chọn theo nhu cầu</h3>
+        <ul class="site-footer__list">
+          {
+            audiences.map((aud) => (
+              <li>
+                <a href={`/${aud.slug}`}>
+                  {aud.title} — <span class="site-footer__muted">{aud.homeSummary}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav class="site-footer__col" aria-label="Danh mục trang">
+        <h3 class="site-footer__heading">Thông tin &amp; Dịch vụ</h3>
+        <ul class="site-footer__list">
+          <li><a href="/">Trang chủ chọn nhu cầu</a></li>
+          <li><a href="/dich-vu">Tất cả dịch vụ (theo đầu ra)</a></li>
+          <li><a href="/nguoi-ban-hang#bang-gia">Bảng giá gói Video Shop</a></li>
+          <li><a href="/#quy-trinh">Quy trình làm việc 3 bước</a></li>
+          <li><a href="/#ve-fagon">Về Fagon</a></li>
+          <li><a href="/bao-mat">Thông tin bảo mật &amp; Tiếp nhận yêu cầu</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {new Date().getFullYear()} {siteConfig.brandName}. Sáng tạo × Công nghệ.</p>
+      <p class="site-footer__bottom-links">
+        <a href="/bao-mat">Chính sách bảo mật dữ liệu biểu mẫu</a>
+        <span aria-hidden="true">•</span>
+        <a href="/dich-vu">Danh mục dịch vụ</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function initTelegramCopyButtons() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-copy-telegram]');
+    buttons.forEach((btn) => {
+      if (btn.dataset.bound === 'true') return;
+      btn.dataset.bound = 'true';
+
+      btn.addEventListener('click', async () => {
+        const phone = btn.getAttribute('data-copy-telegram') || '0367931045';
+        const statusEl =
+          btn.closest('.contact-channel-card--telegram')?.querySelector<HTMLElement>('.telegram-copy-feedback') ||
+          document.getElementById('telegram-copy-status');
+
+        let copied = false;
+        try {
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            await navigator.clipboard.writeText(phone);
+            copied = true;
+          } else {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = phone;
+            tempInput.setAttribute('readonly', '');
+            tempInput.style.position = 'fixed';
+            tempInput.style.opacity = '0';
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            copied = document.execCommand('copy');
+            document.body.removeChild(tempInput);
+          }
+        } catch {
+          copied = false;
+        }
+
+        if (statusEl) {
+          statusEl.hidden = false;
+          if (copied) {
+            statusEl.textContent = `Đã sao chép số Telegram: ${phone}`;
+            statusEl.className = 'telegram-copy-feedback is-success';
+            btn.textContent = 'Đã sao chép ✓';
+          } else {
+            statusEl.textContent = `Không thể tự động sao chép. Vui lòng bôi đen và chép số: ${phone}`;
+            statusEl.className = 'telegram-copy-feedback is-error';
+          }
+        }
+      });
+    });
+  }
+
+  initTelegramCopyButtons();
+</script>
+
+<style>
+  .site-footer {
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    padding-block: clamp(3rem, 6vw, 5rem) 2.5rem;
+    margin-top: auto;
+  }
+
+  .contact-banner {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3.5vw, 2.75rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3.5rem;
+  }
+
+  @media (min-width: 920px) {
+    .contact-banner {
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+    }
+  }
+
+  .contact-banner__title {
+    color: var(--color-ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .contact-banner__desc {
+    color: var(--color-text-muted);
+    max-width: 54ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-banner__primary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .contact-channels {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .contact-channel-card {
+    background-color: var(--color-surface);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .contact-channel-card__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .contact-channel-card__label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    display: block;
+  }
+
+  .contact-channel-card__value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    word-break: break-word;
+  }
+
+  .contact-channel-card__note {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+
+  .btn-copy-telegram {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+
+  .telegram-copy-feedback {
+    margin: 0.5rem 0 0 0;
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .telegram-copy-feedback.is-success {
+    background-color: var(--color-lime);
+    color: var(--color-ink);
+    border: 1px solid var(--color-ink);
+  }
+
+  .telegram-copy-feedback.is-error {
+    background-color: var(--color-error-bg);
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(246, 243, 235, 0.16);
+  }
+
+  @media (min-width: 768px) {
+    .site-footer__grid {
+      grid-template-columns: 1.1fr 1fr 1fr;
+    }
+  }
+
+  .site-footer__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--color-cream);
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+    transition: opacity var(--transition-fast);
+  }
+
+  .site-footer__logo:hover {
+    opacity: 0.92;
+  }
+
+  .site-footer__logo-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: transform var(--transition-bounce), border-color var(--transition-fast);
+  }
+
+  .site-footer__logo:hover .site-footer__logo-mark {
+    transform: rotate(-3deg) scale(1.05);
+    border-color: var(--color-lime);
+  }
+
+  .site-footer__logo-img {
+    width: 25px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .site-footer__tagline {
+    color: #d0d3ca;
+    font-size: 0.94rem;
+    max-width: 38ch;
+  }
+
+  .site-footer__heading {
+    color: var(--color-lime);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.85rem;
+  }
+
+  .site-footer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .site-footer__list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 38px;
+    color: var(--color-cream);
+    text-decoration: none;
+    font-size: 0.92rem;
+  }
+
+  .site-footer__list a:hover {
+    color: var(--color-lime);
+    text-decoration: underline;
+  }
+
+  .site-footer__muted {
+    color: #b7bab0;
+  }
+
+  .site-footer__bottom {
+    padding-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.86rem;
+    color: #b7bab0;
+  }
+
+  .site-footer__bottom p {
+    margin: 0;
+  }
+
+  .site-footer__bottom-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .site-footer__bottom-links a {
+    color: var(--color-cream);
+  }
+</style>

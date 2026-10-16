@@ -1,0 +1,1052 @@
+---
+import { audiences, type AudienceId } from '../data/audiences';
+import { allServices } from '../data/services';
+import { siteConfig } from '../data/site';
+
+interface Props {
+  defaultAudienceId?: AudienceId | 'khac';
+  defaultServiceId?: string;
+}
+
+const { defaultAudienceId = 'khac', defaultServiceId = '' } = Astro.props;
+
+const formProvider = import.meta.env.PUBLIC_FORM_PROVIDER || '';
+const formEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || '';
+const web3FormsKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY || '';
+const isProviderConfigured = Boolean(formEndpoint || web3FormsKey);
+---
+
+<section class="section" id="yeu-cau-tu-van" aria-labelledby="form-section-title">
+  <div class="container">
+    <div class="form-layout">
+      <!-- Left Column: Guidance & Direct Fallback Info -->
+      <div class="form-sidebar">
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>TIẾP NHẬN YÊU CẦU TƯ VẤN</span>
+        </div>
+        <h2 id="form-section-title">Gửi mô tả nhu cầu của bạn cho Fagon</h2>
+        <p class="form-sidebar__lead">
+          Chia sẻ ngắn gọn mục tiêu, nội dung hiện có và thời gian bạn cần sản phẩm. Fagon sẽ phản hồi phương án và báo giá phù hợp.
+        </p>
+
+        <div class="form-sidebar__box">
+          <h3>Lưu ý khi gửi tài liệu tham khảo</h3>
+          <ul>
+            <li>Phiên bản web hiện tại không thu trực tiếp tệp đính kèm để đảm bảo an toàn và tốc độ.</li>
+            <li>Nếu có sẵn ảnh mẫu, giáo án hoặc tài liệu Word/Slide, bạn hãy dán đường link (Google Drive, OneDrive, Dropbox...) vào ô <strong>Link tham khảo</strong>.</li>
+            <li>Xem chi tiết cách Fagon xử lý thông tin tại trang <a href="/bao-mat">Thông tin bảo mật &amp; Tiếp nhận yêu cầu</a>.</li>
+          </ul>
+        </div>
+
+        <div class="form-sidebar__direct">
+          <h3>Kênh liên hệ trực tiếp / Dự phòng</h3>
+          <p>Nếu bạn muốn trao đổi nhanh hoặc gửi ảnh trực tiếp qua tin nhắn:</p>
+          <ul class="form-sidebar__contacts">
+            <li>
+              <strong>Email:</strong>{' '}
+              <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a>
+            </li>
+            <li>
+              <strong>Facebook:</strong>{' '}
+              <a href={siteConfig.contact.facebookUrl} target="_blank" rel="noopener noreferrer">
+                {siteConfig.contact.facebookLabel}
+              </a>
+            </li>
+            <li>
+              <strong>Telegram:</strong> <span>{siteConfig.contact.telegramPhone}</span>{' '}
+              <span class="form-sidebar__muted">(chưa dùng username)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Form -->
+      <div class="form-card">
+        {
+          !isProviderConfigured && (
+            <div class="form-config-banner" role="note" data-testid="form-unconfigured-notice">
+              <strong>Trạng thái kết nối biểu mẫu:</strong> Hiện đang ở chế độ chờ cấu hình khóa nhận đơn (<code>PUBLIC_WEB3FORMS_ACCESS_KEY</code> hoặc <code>PUBLIC_FORM_ENDPOINT</code> gửi về <strong>{siteConfig.contact.email}</strong>). Bạn vẫn có thể điền đầy đủ bên dưới để kiểm tra hợp lệ, sao chép bản tóm tắt yêu cầu hoặc chuyển sang gửi Email / Facebook dự phòng.
+            </div>
+          )
+        }
+
+        <form
+          id="fagon-inquiry-form"
+          class="inquiry-form"
+          novalidate
+          data-provider={formProvider}
+          data-endpoint={formEndpoint}
+          data-web3forms-key={web3FormsKey}
+        >
+          <!-- Anti-spam Honeypot Field (Hidden from real users) -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="fagon-hp-website">Không điền vào trường này nếu bạn là người thật</label>
+            <input
+              type="text"
+              id="fagon-hp-website"
+              name="website_url_hp"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- 1. Common Fields -->
+          <fieldset class="form-fieldset">
+            <legend class="form-legend">1. Thông tin liên hệ &amp; Nhu cầu chính</legend>
+
+            <div class="form-field">
+              <label for="field-fullName" class="form-label">
+                Tên của bạn <span class="req-star" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="field-fullName"
+                name="fullName"
+                class="form-input"
+                required
+                maxlength="120"
+                autocomplete="name"
+                placeholder="Ví dụ: Nguyễn Minh Anh"
+                aria-describedby="error-fullName"
+              />
+              <p id="error-fullName" class="field-error" role="alert" hidden></p>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-field">
+                <label for="field-contactEmail" class="form-label">
+                  Email liên hệ <span class="req-hint">(Nhập Email hoặc SĐT) *</span>
+                </label>
+                <input
+                  type="email"
+                  id="field-contactEmail"
+                  name="contactEmail"
+                  class="form-input"
+                  maxlength="160"
+                  autocomplete="email"
+                  placeholder="tenban@email.com"
+                  aria-describedby="error-contactChannel"
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="field-contactPhone" class="form-label">
+                  Số điện thoại / Telegram <span class="req-hint">(Ít nhất 1 kênh) *</span>
+                </label>
+                <input
+                  type="tel"
+                  id="field-contactPhone"
+                  name="contactPhone"
+                  class="form-input"
+                  maxlength="40"
+                  autocomplete="tel"
+                  placeholder="Ví dụ: 0912 345 678"
+                  aria-describedby="error-contactChannel"
+                />
+              </div>
+            </div>
+            <p id="error-contactChannel" class="field-error" role="alert" hidden></p>
+
+            <div class="form-row-2">
+              <div class="form-field">
+                <label for="field-audienceId" class="form-label">
+                  Nhóm nhu cầu <span class="req-star" aria-hidden="true">*</span>
+                </label>
+                <select id="field-audienceId" name="audienceId" class="form-select">
+                  {
+                    audiences.map((aud) => (
+                      <option value={aud.id} selected={defaultAudienceId === aud.id}>
+                        {aud.title} ({aud.homeSummary})
+                      </option>
+                    ))
+                  }
+                  <option value="khac" selected={defaultAudienceId === 'khac'}>
+                    Khác / Chưa xác định nhóm
+                  </option>
+                </select>
+                <span class="field-help">
+                  Đổi nhóm nhu cầu sẽ hiển thị thêm câu hỏi gợi ý tương ứng mà không làm mất nội dung bạn đã nhập.
+                </span>
+              </div>
+
+              <div class="form-field">
+                <label for="field-serviceId" class="form-label">
+                  Dịch vụ quan tâm <span class="req-star" aria-hidden="true">*</span>
+                </label>
+                <select
+                  id="field-serviceId"
+                  name="serviceId"
+                  class="form-select"
+                  required
+                  aria-describedby="error-serviceId"
+                >
+                  <option value="" selected={!defaultServiceId}>-- Chọn dịch vụ cần thực hiện --</option>
+                  {
+                    allServices.map((srv) => (
+                      <option value={srv.id} selected={defaultServiceId === srv.id}>
+                        {srv.title}
+                      </option>
+                    ))
+                  }
+                  <option value="tu-van-tong-hop">Cần tư vấn kết hợp nhiều dịch vụ / Chưa rõ</option>
+                </select>
+                <p id="error-serviceId" class="field-error" role="alert" hidden></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- 2. Dynamic Audience-Specific Fields (Only active audience fieldset is shown) -->
+          <div id="dynamic-audience-fields-wrapper">
+            {
+              audiences.map((aud) => {
+                const isInitiallyActive = defaultAudienceId === aud.id;
+                return (
+                  <fieldset
+                    class="form-fieldset form-fieldset--dynamic"
+                    data-audience-fieldset={aud.id}
+                    hidden={!isInitiallyActive}
+                    disabled={!isInitiallyActive}
+                  >
+                    <legend class="form-legend">
+                      2. Thông tin bổ sung cho {aud.title} (Tùy chọn giúp báo giá nhanh hơn)
+                    </legend>
+                    <div class="dynamic-fields-grid">
+                      {aud.formFields.map((df) => {
+                        const inputId = `field-${aud.id}-${df.name}`;
+                        return (
+                          <div class="form-field">
+                            <label for={inputId} class="form-label">
+                              {df.label}
+                            </label>
+                            {df.type === 'select' ? (
+                              <select id={inputId} name={`${aud.id}_${df.name}`} class="form-select">
+                                <option value="">-- Chọn thông tin phù hợp --</option>
+                                {df.options?.map((opt) => (
+                                  <option value={opt}>{opt}</option>
+                                ))}
+                              </select>
+                            ) : df.type === 'textarea' ? (
+                              <textarea
+                                id={inputId}
+                                name={`${aud.id}_${df.name}`}
+                                class="form-textarea"
+                                rows="2"
+                                maxlength="1000"
+                                placeholder={df.placeholder || ''}
+                              />
+                            ) : (
+                              <input
+                                type={df.type === 'url' ? 'url' : 'text'}
+                                id={inputId}
+                                name={`${aud.id}_${df.name}`}
+                                class="form-input"
+                                maxlength="300"
+                                placeholder={df.placeholder || ''}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+                );
+              })
+            }
+          </div>
+
+          <!-- 3. Project Details & Consent -->
+          <fieldset class="form-fieldset">
+            <legend class="form-legend">3. Mô tả chi tiết &amp; Thời gian dự kiến</legend>
+
+            <div class="form-field">
+              <label for="field-description" class="form-label">
+                Mô tả yêu cầu của bạn <span class="req-star" aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="field-description"
+                name="description"
+                class="form-textarea"
+                rows="4"
+                required
+                maxlength="3000"
+                placeholder="Hãy chia sẻ mục tiêu sản phẩm, số lượng dự kiến, nội dung đầu vào bạn đang có và yêu cầu cụ thể..."
+                aria-describedby="error-description"
+              ></textarea>
+              <p id="error-description" class="field-error" role="alert" hidden></p>
+            </div>
+
+            <div class="form-field">
+              <label for="field-referenceLink" class="form-label">
+                Link tài liệu đầu vào hoặc mẫu tham khảo (Tùy chọn)
+              </label>
+              <input
+                type="url"
+                id="field-referenceLink"
+                name="referenceLink"
+                class="form-input"
+                maxlength="500"
+                placeholder="https://drive.google.com/... hoặc link bài mẫu bạn thích"
+                aria-describedby="error-referenceLink"
+              />
+              <p id="error-referenceLink" class="field-error" role="alert" hidden></p>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-field">
+                <label for="field-budget" class="form-label">
+                  Ngân sách dự kiến (Tùy chọn)
+                </label>
+                <input
+                  type="text"
+                  id="field-budget"
+                  name="budget"
+                  class="form-input"
+                  maxlength="150"
+                  placeholder="Ví dụ: Theo gói Tiêu chuẩn / Khoảng 500.000đ..."
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="field-desiredDate" class="form-label">
+                  Ngày cần nhận sản phẩm (Tùy chọn)
+                </label>
+                <input
+                  type="date"
+                  id="field-desiredDate"
+                  name="desiredDate"
+                  class="form-input"
+                />
+              </div>
+            </div>
+
+            <div class="form-field form-field--checkbox">
+              <label for="field-consent" class="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="field-consent"
+                  name="consent"
+                  value="yes"
+                  required
+                  aria-describedby="error-consent"
+                />
+                <span>
+                  Tôi đồng ý để Fagon sử dụng thông tin trên nhằm phản hồi và tư vấn về yêu cầu này (xem <a href="/bao-mat">Thông tin bảo mật</a>). <span class="req-star" aria-hidden="true">*</span>
+                </span>
+              </label>
+              <p id="error-consent" class="field-error" role="alert" hidden></p>
+            </div>
+          </fieldset>
+
+          <div class="form-submit-row">
+            <button type="submit" id="form-submit-btn" class="btn btn--primary form-submit-btn">
+              Gửi yêu cầu tư vấn
+            </button>
+          </div>
+
+          <!-- Status / Result Container (Never fakes success when endpoint is unconfigured) -->
+          <div id="form-status-panel" class="form-status-panel" role="status" aria-live="polite" hidden>
+            <h4 id="form-status-title" class="form-status-panel__title"></h4>
+            <p id="form-status-message" class="form-status-panel__msg"></p>
+
+            <div id="form-fallback-actions" class="form-fallback-actions" hidden>
+              <div class="form-fallback-actions__buttons">
+                <button type="button" id="copy-brief-btn" class="btn btn--dark">
+                  Sao chép toàn bộ nội dung vừa nhập
+                </button>
+                <a
+                  id="mailto-fallback-link"
+                  href={`mailto:${siteConfig.contact.email}`}
+                  class="btn btn--primary"
+                >
+                  Mở ứng dụng Email gửi tới {siteConfig.contact.email}
+                </a>
+                <a
+                  href={siteConfig.contact.facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn--outline"
+                >
+                  Gửi qua Facebook Fagon
+                </a>
+              </div>
+              <p id="copy-brief-feedback" class="copy-brief-feedback" hidden></p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initFagonInquiryForm() {
+    const form = document.getElementById('fagon-inquiry-form') as HTMLFormElement | null;
+    if (!form) return;
+
+    const audienceSelect = document.getElementById('field-audienceId') as HTMLSelectElement | null;
+    const serviceSelect = document.getElementById('field-serviceId') as HTMLSelectElement | null;
+    const fullNameInput = document.getElementById('field-fullName') as HTMLInputElement | null;
+    const emailInput = document.getElementById('field-contactEmail') as HTMLInputElement | null;
+    const phoneInput = document.getElementById('field-contactPhone') as HTMLInputElement | null;
+    const descInput = document.getElementById('field-description') as HTMLTextAreaElement | null;
+    const refLinkInput = document.getElementById('field-referenceLink') as HTMLInputElement | null;
+    const consentInput = document.getElementById('field-consent') as HTMLInputElement | null;
+    const submitBtn = document.getElementById('form-submit-btn') as HTMLButtonElement | null;
+
+    const statusPanel = document.getElementById('form-status-panel');
+    const statusTitle = document.getElementById('form-status-title');
+    const statusMsg = document.getElementById('form-status-message');
+    const fallbackActions = document.getElementById('form-fallback-actions');
+    const copyBriefBtn = document.getElementById('copy-brief-btn');
+    const copyBriefFeedback = document.getElementById('copy-brief-feedback');
+    const mailtoFallbackLink = document.getElementById('mailto-fallback-link') as HTMLAnchorElement | null;
+
+    let isSubmitting = false;
+    let lastFormattedBrief = '';
+
+    // 1. Toggle dynamic audience fieldset WITHOUT losing any common input values
+    function syncDynamicAudienceFields(selectedAudience: string) {
+      const fieldsets = form!.querySelectorAll<HTMLFieldSetElement>('[data-audience-fieldset]');
+      fieldsets.forEach((fs) => {
+        const group = fs.getAttribute('data-audience-fieldset');
+        const active = group === selectedAudience;
+        fs.hidden = !active;
+        fs.disabled = !active;
+      });
+    }
+
+    audienceSelect?.addEventListener('change', () => {
+      syncDynamicAudienceFields(audienceSelect.value);
+    });
+
+    // 2. Listen for service pre-selection buttons across the page ([data-select-service])
+    document.querySelectorAll<HTMLElement>('[data-select-service]').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const targetAudience = trigger.getAttribute('data-select-audience');
+        const targetService = trigger.getAttribute('data-select-service');
+        const targetServiceLabel = trigger.getAttribute('data-select-service-label');
+
+        if (targetAudience && audienceSelect) {
+          audienceSelect.value = targetAudience;
+          syncDynamicAudienceFields(targetAudience);
+        }
+
+        if (targetService && serviceSelect) {
+          const optionExists = Array.from(serviceSelect.options).some(
+            (opt) => opt.value === targetService
+          );
+          if (optionExists) {
+            serviceSelect.value = targetService;
+          } else {
+            serviceSelect.value = 'tu-van-tong-hop';
+          }
+        }
+
+        if (targetServiceLabel && descInput && !descInput.value.trim()) {
+          descInput.value = `Tôi quan tâm đến hạng mục: ${targetServiceLabel}.\nChi tiết nhu cầu: `;
+        }
+      });
+    });
+
+    // 3. Support URL query params ?audience=...&service=... (useful when navigating from /dich-vu)
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const qAudience = params.get('audience');
+      const qService = params.get('service');
+      if (qAudience && audienceSelect) {
+        const exists = Array.from(audienceSelect.options).some((o) => o.value === qAudience);
+        if (exists) {
+          audienceSelect.value = qAudience;
+          syncDynamicAudienceFields(qAudience);
+        }
+      }
+      if (qService && serviceSelect) {
+        const exists = Array.from(serviceSelect.options).some((o) => o.value === qService);
+        if (exists) {
+          serviceSelect.value = qService;
+        }
+      }
+    } catch {
+      // Ignore URL parse issues
+    }
+
+    // 4. Validation Helpers
+    function setFieldError(errorId: string, inputEl: HTMLElement | null, message: string | null) {
+      const errEl = document.getElementById(errorId);
+      if (!errEl) return;
+      if (message) {
+        errEl.textContent = message;
+        errEl.hidden = false;
+        inputEl?.setAttribute('aria-invalid', 'true');
+      } else {
+        errEl.textContent = '';
+        errEl.hidden = true;
+        inputEl?.removeAttribute('aria-invalid');
+      }
+    }
+
+    function isValidEmail(val: string): boolean {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+    }
+
+    function isValidPhone(val: string): boolean {
+      const digits = val.replace(/[\s.\-+()]/g, '');
+      return /^\d{8,15}$/.test(digits);
+    }
+
+    function isValidUrl(val: string): boolean {
+      try {
+        const u = new URL(val);
+        return u.protocol === 'http:' || u.protocol === 'https:';
+      } catch {
+        return false;
+      }
+    }
+
+    function validateForm(): boolean {
+      let valid = true;
+
+      const fullName = fullNameInput?.value.trim() || '';
+      if (!fullName) {
+        setFieldError('error-fullName', fullNameInput, 'Vui lòng nhập tên của bạn.');
+        valid = false;
+      } else {
+        setFieldError('error-fullName', fullNameInput, null);
+      }
+
+      const email = emailInput?.value.trim() || '';
+      const phone = phoneInput?.value.trim() || '';
+
+      if (!email && !phone) {
+        setFieldError(
+          'error-contactChannel',
+          emailInput,
+          'Vui lòng nhập ít nhất một kênh liên hệ hợp lệ (Email hoặc Số điện thoại / Telegram).'
+        );
+        valid = false;
+      } else if (email && !isValidEmail(email)) {
+        setFieldError(
+          'error-contactChannel',
+          emailInput,
+          'Địa chỉ Email chưa đúng định dạng (ví dụ: tenban@gmail.com).'
+        );
+        valid = false;
+      } else if (phone && !isValidPhone(phone)) {
+        setFieldError(
+          'error-contactChannel',
+          phoneInput,
+          'Số điện thoại cần từ 8 đến 15 chữ số hợp lệ.'
+        );
+        valid = false;
+      } else {
+        setFieldError('error-contactChannel', emailInput, null);
+        phoneInput?.removeAttribute('aria-invalid');
+      }
+
+      const serviceVal = serviceSelect?.value || '';
+      if (!serviceVal) {
+        setFieldError('error-serviceId', serviceSelect, 'Vui lòng chọn dịch vụ bạn đang quan tâm.');
+        valid = false;
+      } else {
+        setFieldError('error-serviceId', serviceSelect, null);
+      }
+
+      const desc = descInput?.value.trim() || '';
+      if (!desc || desc.length < 10) {
+        setFieldError(
+          'error-description',
+          descInput,
+          'Vui lòng mô tả ngắn gọn nhu cầu của bạn (tối thiểu 10 ký tự).'
+        );
+        valid = false;
+      } else {
+        setFieldError('error-description', descInput, null);
+      }
+
+      const refLink = refLinkInput?.value.trim() || '';
+      if (refLink && !isValidUrl(refLink)) {
+        setFieldError(
+          'error-referenceLink',
+          refLinkInput,
+          'Link tham khảo cần bắt đầu bằng https:// hoặc http:// hợp lệ.'
+        );
+        valid = false;
+      } else {
+        setFieldError('error-referenceLink', refLinkInput, null);
+      }
+
+      if (!consentInput?.checked) {
+        setFieldError(
+          'error-consent',
+          consentInput,
+          'Vui lòng xác nhận đồng ý để Fagon liên hệ phản hồi về yêu cầu này.'
+        );
+        valid = false;
+      } else {
+        setFieldError('error-consent', consentInput, null);
+      }
+
+      return valid;
+    }
+
+    function buildFormattedSummary(formData: FormData): string {
+      const lines: string[] = [
+        '=== YÊU CẦU TƯ VẤN DỰ ÁN — FAGON ===',
+        `• Họ tên: ${formData.get('fullName') || ''}`,
+        `• Email: ${formData.get('contactEmail') || '(Không điền)'}`,
+        `• SĐT / Telegram: ${formData.get('contactPhone') || '(Không điền)'}`,
+        `• Nhóm nhu cầu: ${audienceSelect?.options[audienceSelect.selectedIndex]?.text || formData.get('audienceId')}`,
+        `• Dịch vụ: ${serviceSelect?.options[serviceSelect.selectedIndex]?.text || formData.get('serviceId')}`,
+        `• Ngân sách dự kiến: ${formData.get('budget') || '(Chưa xác định)'}`,
+        `• Ngày cần nhận: ${formData.get('desiredDate') || '(Chưa xác định)'}`,
+        `• Link tham khảo: ${formData.get('referenceLink') || '(Không có)'}`,
+      ];
+
+      // Include active audience-specific fields
+      const activeAudience = String(formData.get('audienceId') || '');
+      for (const [key, val] of formData.entries()) {
+        if (key.startsWith(`${activeAudience}_`) && String(val).trim()) {
+          lines.push(`• Thông tin nhóm (${key.replace(`${activeAudience}_`, '')}): ${String(val).trim()}`);
+        }
+      }
+
+      lines.push('', '--- Mô tả chi tiết ---', String(formData.get('description') || '').trim());
+      return lines.join('\n');
+    }
+
+    // 5. Submit Handler with Pluggable Provider Adapter
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (isSubmitting) return;
+
+      // Check Honeypot anti-spam
+      const hpInput = document.getElementById('fagon-hp-website') as HTMLInputElement | null;
+      if (hpInput && hpInput.value.trim() !== '') {
+        return;
+      }
+
+      if (!validateForm()) {
+        const firstInvalid = form.querySelector<HTMLElement>('[aria-invalid="true"]');
+        firstInvalid?.focus();
+        return;
+      }
+
+      const formData = new FormData(form);
+      lastFormattedBrief = buildFormattedSummary(formData);
+
+      // Update mailto fallback link with pre-filled subject & body
+      if (mailtoFallbackLink) {
+        const subject = encodeURIComponent(
+          `[Fagon Tư vấn] ${formData.get('fullName')} — ${serviceSelect?.options[serviceSelect.selectedIndex]?.text || 'Dự án mới'}`
+        );
+        const body = encodeURIComponent(lastFormattedBrief);
+        mailtoFallbackLink.href = `mailto:fagonlab@gmail.com?subject=${subject}&body=${body}`;
+      }
+
+      // Check provider configuration (from build env or runtime test override)
+      const runtimeOverride = (window as any).__FAGON_FORM_CONFIG__ || {};
+      const endpoint =
+        runtimeOverride.endpoint !== undefined
+          ? runtimeOverride.endpoint
+          : form.getAttribute('data-endpoint') || '';
+      const web3Key =
+        runtimeOverride.web3FormsKey !== undefined
+          ? runtimeOverride.web3FormsKey
+          : form.getAttribute('data-web3forms-key') || '';
+
+      // If no provider is configured yet: DO NOT fake success! Explain clearly & keep all entered data.
+      if (!endpoint && !web3Key) {
+        if (statusPanel && statusTitle && statusMsg && fallbackActions) {
+          statusPanel.hidden = false;
+          statusPanel.className = 'form-status-panel is-unconfigured';
+          statusPanel.setAttribute('data-form-result', 'unconfigured');
+          statusTitle.textContent =
+            'Biểu mẫu chưa kết nối máy chủ nhận đơn — Nội dung của bạn đã được giữ nguyên';
+          statusMsg.textContent =
+            'Website hiện chưa được gắn khóa nhận biểu mẫu tự động (PUBLIC_WEB3FORMS_ACCESS_KEY hoặc PUBLIC_FORM_ENDPOINT). Để không mất thời gian nhập lại, bạn hãy bấm "Sao chép toàn bộ nội dung vừa nhập" để gửi qua Facebook / Telegram (0367931045) hoặc bấm gửi qua ứng dụng Email bên dưới:';
+          fallbackActions.hidden = false;
+        }
+        return;
+      }
+
+      // Real HTTP Submission when provider is configured
+      isSubmitting = true;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang gửi yêu cầu...';
+      }
+      if (statusPanel && statusTitle && statusMsg && fallbackActions) {
+        statusPanel.hidden = false;
+        statusPanel.className = 'form-status-panel is-loading';
+        statusPanel.setAttribute('data-form-result', 'submitting');
+        statusTitle.textContent = 'Đang gửi thông tin...';
+        statusMsg.textContent = 'Vui lòng chờ trong giây lát, không đóng trình duyệt.';
+        fallbackActions.hidden = true;
+      }
+
+      try {
+        const targetUrl = endpoint || 'https://api.web3forms.com/submit';
+        const payload: Record<string, string> = {};
+        for (const [k, v] of formData.entries()) {
+          if (k !== 'website_url_hp') {
+            payload[k] = String(v);
+          }
+        }
+        if (web3Key) {
+          payload.access_key = web3Key;
+          payload.subject = `[Fagon Website] Yêu cầu tư vấn từ ${payload.fullName}`;
+        }
+
+        const response = await fetch(targetUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        if (statusPanel && statusTitle && statusMsg && fallbackActions) {
+          statusPanel.hidden = false;
+          statusPanel.className = 'form-status-panel is-success';
+          statusPanel.setAttribute('data-form-result', 'success');
+          statusTitle.textContent = '✓ Đã gửi yêu cầu tư vấn thành công!';
+          statusMsg.textContent =
+            'Cảm ơn bạn đã liên hệ Fagon. Chúng tôi đã nhận được thông tin và sẽ phản hồi qua Email hoặc Số điện thoại/Telegram của bạn sớm nhất.';
+          fallbackActions.hidden = true;
+        }
+        form.reset();
+        syncDynamicAudienceFields(audienceSelect?.value || 'khac');
+      } catch {
+        // Keep all form data intact on error and allow immediate retry or fallback
+        if (statusPanel && statusTitle && statusMsg && fallbackActions) {
+          statusPanel.hidden = false;
+          statusPanel.className = 'form-status-panel is-error';
+          statusPanel.setAttribute('data-form-result', 'error');
+          statusTitle.textContent = 'Không thể gửi tự động lúc này — Dữ liệu của bạn vẫn được giữ nguyên';
+          statusMsg.textContent =
+            'Đã xảy ra lỗi kết nối tới máy chủ nhận biểu mẫu. Bạn có thể bấm "Gửi yêu cầu tư vấn" để thử lại, hoặc sao chép nội dung bên dưới để gửi trực tiếp qua Email / Facebook:';
+          fallbackActions.hidden = false;
+        }
+      } finally {
+        isSubmitting = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Gửi yêu cầu tư vấn';
+        }
+      }
+    });
+
+    copyBriefBtn?.addEventListener('click', async () => {
+      if (!lastFormattedBrief) {
+        lastFormattedBrief = buildFormattedSummary(new FormData(form));
+      }
+      try {
+        await navigator.clipboard.writeText(lastFormattedBrief);
+        if (copyBriefFeedback) {
+          copyBriefFeedback.hidden = false;
+          copyBriefFeedback.textContent =
+            '✓ Đã sao chép toàn bộ nội dung yêu cầu! Bạn có thể dán (Ctrl+V) ngay vào tin nhắn Facebook, Email hoặc Telegram.';
+        }
+      } catch {
+        if (copyBriefFeedback) {
+          copyBriefFeedback.hidden = false;
+          copyBriefFeedback.textContent =
+            'Trình duyệt chặn sao chép tự động. Vui lòng dùng nút Mở ứng dụng Email bên cạnh.';
+        }
+      }
+    });
+  }
+
+  initFagonInquiryForm();
+</script>
+
+<style>
+  .form-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (min-width: 980px) {
+    .form-layout {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 3rem;
+    }
+  }
+
+  .form-sidebar__lead {
+    color: var(--color-text-muted);
+    font-size: 1.02rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-sidebar__box,
+  .form-sidebar__direct {
+    background-color: var(--color-surface);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .form-sidebar__box h3,
+  .form-sidebar__direct h3 {
+    font-size: 1.02rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .form-sidebar__box ul {
+    margin: 0;
+    padding-left: 1.15rem;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .form-sidebar__direct p {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .form-sidebar__contacts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .form-sidebar__muted {
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+  }
+
+  .form-card {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.35rem, 3vw, 2.25rem);
+    box-shadow: var(--shadow-card);
+  }
+
+  .form-config-banner {
+    background-color: var(--color-cream-alt);
+    border: 1.5px dashed var(--color-ink);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1.1rem;
+    font-size: 0.84rem;
+    color: var(--color-ink);
+    margin-bottom: 1.5rem;
+  }
+
+  .hp-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form-fieldset {
+    border: none;
+    margin: 0 0 1.75rem 0;
+    padding: 0;
+  }
+
+  .form-fieldset--dynamic {
+    background-color: var(--color-cream);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+  }
+
+  .form-legend {
+    font-weight: 800;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.45rem;
+    border-bottom: 1.5px solid var(--color-border);
+    width: 100%;
+  }
+
+  .form-fieldset--dynamic .form-legend {
+    background-color: var(--color-lime);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-ink);
+    width: auto;
+    margin-bottom: 0.9rem;
+  }
+
+  .form-row-2,
+  .dynamic-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .form-row-2,
+    .dynamic-fields-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .form-field {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.38rem;
+  }
+
+  .req-star {
+    color: var(--color-error);
+  }
+
+  .req-hint {
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    min-height: 46px;
+    padding: 0.65rem 0.85rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--color-ink);
+    background-color: var(--color-surface);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+  }
+
+  .form-textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  .form-input[aria-invalid='true'],
+  .form-select[aria-invalid='true'],
+  .form-textarea[aria-invalid='true'] {
+    border-color: var(--color-error);
+    background-color: var(--color-error-bg);
+  }
+
+  .field-help {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    margin-top: 0.3rem;
+  }
+
+  .field-error {
+    margin: 0.35rem 0 0 0;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--color-error);
+  }
+
+  .form-field--checkbox {
+    margin-top: 0.5rem;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .checkbox-label input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    margin-top: 0.2rem;
+    accent-color: var(--color-ink);
+    flex-shrink: 0;
+  }
+
+  .form-submit-row {
+    margin-top: 1.25rem;
+  }
+
+  .form-submit-btn {
+    width: 100%;
+    min-height: 52px;
+    font-size: 1.02rem;
+  }
+
+  .form-status-panel {
+    margin-top: 1.35rem;
+    padding: 1.2rem 1.35rem;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--color-ink);
+    background-color: var(--color-cream);
+  }
+
+  .form-status-panel.is-success {
+    background-color: var(--color-success-bg);
+    border-color: var(--color-success);
+  }
+
+  .form-status-panel.is-error {
+    background-color: var(--color-error-bg);
+    border-color: var(--color-error);
+  }
+
+  .form-status-panel.is-unconfigured {
+    background-color: var(--color-cream-alt);
+    border-left: 6px solid var(--color-ink);
+  }
+
+  .form-status-panel__title {
+    margin: 0 0 0.4rem 0;
+    font-size: 1.05rem;
+  }
+
+  .form-status-panel__msg {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .form-fallback-actions {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--color-border);
+  }
+
+  .form-fallback-actions__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .copy-brief-feedback {
+    margin: 0.65rem 0 0 0;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--color-lime);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+</style>

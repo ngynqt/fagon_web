@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 720" width="600" height="720" role="img" aria-label="Ảnh minh họa cùng mẫu áo Blazer Linen màu kem sau khi lên dáng người mẫu studio">
+  <rect width="600" height="720" fill="#F6F3EB"/>
+  <path d="M115 560 L115 240 A185 185 0 0 1 485 240 L485 560 Z" fill="#EAE5D9" stroke="#191B18" stroke-width="1.5"/>
+  <polygon points="485,150 600,90 600,390 485,440" fill="#C5F53C" fill-opacity="0.16"/>
+
+  <rect x="28" y="26" width="266" height="34" rx="17" fill="#C5F53C" stroke="#191B18" stroke-width="1.5"/>
+  <text x="161" y="48" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#191B18" letter-spacing="0.8">SAU • LÊN DÁNG NGƯỜI MẪU STUDIO</text>
+  <rect x="420" y="26" width="152" height="34" rx="6" fill="#191B18"/>
+  <text x="496" y="48" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="600" fill="#C5F53C">Demo minh họa</text>
+
+  <g transform="translate(0, 8)">
+    <path d="M262 98 C262 66, 338 66, 338 98 C342 128, 348 152, 332 162 L268 162 C252 152, 258 128, 262 98 Z" fill="#191B18"/>
+    <path d="M275 94 C275 76, 325 76, 325 94 L323 128 C323 144, 312 154, 300 154 C288 154, 277 144, 277 128 Z" fill="#E8D2B9" stroke="#191B18" stroke-width="2"/>
+    <rect x="286" y="148" width="28" height="26" fill="#E8D2B9" stroke="#191B18" stroke-width="2"/>
+    <polygon points="262,166 338,166 300,275" fill="#191B18"/>
+
+    <path d="M225 495 L235 565 L292 565 L300 515 L308 565 L365 565 L375 495 Z" fill="#191B18"/>
+
+    <path d="M192 172 C164 250, 156 330, 184 428 L224 418 C206 340, 212 275, 226 235 Z" fill="#FBF9F4" stroke="#191B18" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M408 172 C436 250, 444 330, 416 428 L376 418 C394 340, 388 275, 374 235 Z" fill="#FBF9F4" stroke="#191B18" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle cx="176" cy="404" r="3.5" fill="#191B18"/>
+    <circle cx="180" cy="414" r="3.5" fill="#191B18"/>
+    <circle cx="424" cy="404" r="3.5" fill="#191B18"/>
+    <circle cx="420" cy="414" r="3.5" fill="#191B18"/>
+
+    <path d="M192 172 L254 156 L300 268 L346 156 L408 172 L374 275 L364 345 L386 502 L300 510 L214 502 L236 345 L226 275 Z" fill="#FBF9F4" stroke="#191B18" stroke-width="2.5" stroke-linejoin="round"/>
+
+    <path d="M244 330 Q260 355 248 395" fill="none" stroke="#72756C" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M356 330 Q340 355 352 395" fill="none" stroke="#72756C" stroke-width="1.5" stroke-linecap="round"/>
+
+    <polygon points="254,156 220,216 238,224 228,248 300,322 300,268" fill="#F2EFE6" stroke="#191B18" stroke-width="2.2"/>
+    <polygon points="346,156 380,216 362,224 372,248 300,322 300,268" fill="#F2EFE6" stroke="#191B18" stroke-width="2.2"/>
+    <line x1="300" y1="268" x2="316" y2="508" stroke="#191B18" stroke-width="2"/>
+
+    <circle cx="276" cy="348" r="6.5" fill="#191B18" stroke="#C5F53C" stroke-width="1.5"/>
+    <circle cx="324" cy="348" r="6.5" fill="#191B18" stroke="#C5F53C" stroke-width="1.5"/>
+    <circle cx="276" cy="402" r="6.5" fill="#191B18" stroke="#C5F53C" stroke-width="1.5"/>
+    <circle cx="324" cy="402" r="6.5" fill="#191B18" stroke="#C5F53C" stroke-width="1.5"/>
+
+    <rect x="328" y="262" width="40" height="8" rx="2" fill="#EAE6DC" stroke="#191B18" stroke-width="1.8"/>
+    <rect x="224" y="425" width="52" height="20" rx="2" fill="#F2EFE6" stroke="#191B18" stroke-width="2"/>
+    <rect x="324" y="425" width="52" height="20" rx="2" fill="#F2EFE6" stroke="#191B18" stroke-width="2"/>
+  </g>
+
+  <g font-family="sans-serif" font-size="11" font-weight="700">
+    <rect x="34" y="218" width="128" height="28" rx="6" fill="#191B18"/>
+    <text x="98" y="236" text-anchor="middle" fill="#C5F53C">Giữ đúng cổ ve chữ K</text>
+    <line x1="162" y1="232" x2="225" y2="232" stroke="#191B18" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+    <rect x="424" y="340" width="146" height="28" rx="6" fill="#191B18"/>
+    <text x="497" y="358" text-anchor="middle" fill="#C5F53C">Đúng 4 cúc &amp; 2 túi nắp</text>
+    <line x1="334" y1="354" x2="424" y2="354" stroke="#191B18" stroke-width="1.5" stroke-dasharray="3,3"/>
+  </g>
+
+  <rect x="40" y="575" width="520" height="110" rx="12" fill="#191B18"/>
+  <text x="64" y="608" font-family="sans-serif" font-size="15" font-weight="700" fill="#C5F53C">Đầu ra: Lên dáng người mẫu Studio (Duyệt ảnh trước khi làm video)</text>
+  <text x="64" y="634" font-family="sans-serif" font-size="13" fill="#F6F3EB">• Thể hiện rõ độ đứng phom vai, chiều dài áo và chất liệu linen dưới ánh sáng studio.</text>
+  <text x="64" y="658" font-family="sans-serif" font-size="13" fill="#EAE6DC">• Minh bạch: Luôn gửi ảnh tĩnh để chủ shop duyệt kỹ trước khi kết xuất chuyển động.</text>
+</svg>

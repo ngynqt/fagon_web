@@ -1,0 +1,8 @@
+---
+import AudiencePageView from '../components/AudiencePageView.astro';
+import { getAudienceBySlug } from '../data/audiences';
+
+const audience = getAudienceBySlug('giao-vien')!;
+---
+
+<AudiencePageView audience={audience} />

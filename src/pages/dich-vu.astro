@@ -1,0 +1,380 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { audiences } from '../data/audiences';
+import { getPortfolioByIds } from '../data/portfolio';
+import { allServices, getServicesByCategory, outputCategories } from '../data/services';
+---
+
+<BaseLayout
+  title="Tất cả Dịch vụ theo Đầu ra — Ảnh, Video, Slide, Website & Trò chơi | Fagon"
+  description="Danh mục đầy đủ các dịch vụ tại Fagon chia theo 4 nhóm đầu ra: Ảnh & thiết kế, Video & kể chuyện, Slide & trình bày, Website & tương tác. Xem đầu vào cần chuẩn bị, đầu ra có thể đặt và gửi yêu cầu tư vấn."
+>
+  <!-- Hero Section -->
+  <section class="section services-hero">
+    <div class="container">
+      <div class="eyebrow">
+        <span class="eyebrow__dot" aria-hidden="true"></span>
+        <span>DANH MỤC TẤT CẢ DỊCH VỤ ({allServices.length} HẠNG MỤC)</span>
+      </div>
+      <h1>Chọn dịch vụ theo định dạng sản phẩm đầu ra</h1>
+      <p class="services-hero__desc">
+        Nếu bạn chưa chắc mình thuộc nhóm khách hàng nào, bạn có thể tra cứu trực tiếp theo 4 định dạng đầu ra dưới đây. Mỗi hạng mục đều nêu rõ đầu vào bạn cần chuẩn bị và thành phẩm Fagon bàn giao.
+      </p>
+
+      <!-- Category Filter / Jump Bar (Works both as anchor links without JS and filter tabs with JS) -->
+      <div class="category-bar" role="group" aria-label="Chọn nhóm đầu ra dịch vụ">
+        <button
+          type="button"
+          class="category-tab is-active"
+          data-filter-category="all"
+          aria-pressed="true"
+        >
+          Tất cả đầu ra ({allServices.length})
+        </button>
+        {
+          outputCategories.map((cat) => (
+            <a
+              href={`#nhom-${cat.id}`}
+              class="category-tab"
+              data-filter-category={cat.id}
+              aria-pressed="false"
+            >
+              {cat.title} ({getServicesByCategory(cat.id).length})
+            </a>
+          ))
+        }
+      </div>
+
+      <!-- Quick Audience Links -->
+      <div class="audience-jump-row">
+        <span>Hoặc xem theo nhóm nhu cầu:</span>
+        {
+          audiences.map((aud) => (
+            <a href={`/${aud.slug}`} class="mini-audience-link">
+              {aud.title}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 Output Category Sections -->
+  {
+    outputCategories.map((cat, catIdx) => {
+      const catServices = getServicesByCategory(cat.id);
+      return (
+        <section
+          class:list={['section', { 'section--alt': catIdx % 2 === 1 }]}
+          id={`nhom-${cat.id}`}
+          data-category-section={cat.id}
+        >
+          <div class="container">
+            <div class="section-header section-header--split">
+              <div>
+                <div class="eyebrow">
+                  <span class="eyebrow__dot" aria-hidden="true"></span>
+                  <span>NHÓM ĐẦU RA 0{catIdx + 1}</span>
+                </div>
+                <h2>{cat.title}</h2>
+              </div>
+              <p class="cat-desc">{cat.description}</p>
+            </div>
+
+            <div class="services-detailed-grid">
+              {catServices.map((srv) => {
+                const relatedDemos = getPortfolioByIds(srv.demoIds);
+                return (
+                  <article class="card detailed-service-card" id={`dich-vu-${srv.id}`}>
+                    <div class="detailed-service-card__top">
+                      <div class="detailed-service-card__badges">
+                        <span class="badge badge--lime">{cat.shortLabel}</span>
+                        <span class="badge badge--muted">{srv.pricingHint}</span>
+                      </div>
+                      <h3 class="detailed-service-card__title">{srv.title}</h3>
+                      <p class="detailed-service-card__summary">{srv.shortDescription}</p>
+                    </div>
+
+                    <div class="detailed-service-card__specs">
+                      <div class="spec-col">
+                        <h4>Đầu vào cần chuẩn bị</h4>
+                        <ul>
+                          {srv.inputsRequired.map((inp) => (
+                            <li>{inp}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div class="spec-col">
+                        <h4>Đầu ra có thể đặt</h4>
+                        <ul>
+                          {srv.deliverables.map((del) => (
+                            <li>{del}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {relatedDemos.length > 0 && (
+                      <div class="detailed-service-card__demos">
+                        <span class="demos-label">Demo phù hợp:</span>
+                        <div class="demos-chips">
+                          {relatedDemos.map((dm) => {
+                            const targetHref =
+                              dm.liveExperienceAnchor ||
+                              `/${dm.audienceIds[0] || 'nguoi-ban-hang'}#demo-section`;
+                            return (
+                              <a href={targetHref} class="demo-chip">
+                                <span class="demo-chip__tag">{dm.demoLabel}</span>
+                                <span>{dm.title}</span>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    <div class="detailed-service-card__footer">
+                      <a
+                        href="#yeu-cau-tu-van"
+                        class="btn btn--primary detailed-service-card__cta"
+                        data-select-audience="khac"
+                        data-select-service={srv.id}
+                        data-select-service-label={srv.title}
+                      >
+                        Trao đổi nhu cầu
+                      </a>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+
+  <!-- Consultation Form (Default audience: "Khác / Chưa xác định", pre-selected service when clicked) -->
+  <ContactForm defaultAudienceId="khac" />
+</BaseLayout>
+
+<script>
+  function initCategoryFilter() {
+    const tabs = document.querySelectorAll<HTMLElement>('[data-filter-category]');
+    const sections = document.querySelectorAll<HTMLElement>('[data-category-section]');
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', (e) => {
+        const catId = tab.getAttribute('data-filter-category') || 'all';
+        e.preventDefault();
+
+        tabs.forEach((t) => {
+          const active = t === tab;
+          t.classList.toggle('is-active', active);
+          t.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+
+        sections.forEach((sec) => {
+          const secCat = sec.getAttribute('data-category-section');
+          sec.hidden = !(catId === 'all' || secCat === catId);
+        });
+      });
+    });
+  }
+
+  initCategoryFilter();
+</script>
+
+<style>
+  .services-hero {
+    background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-cream-alt) 100%);
+  }
+
+  .services-hero__desc {
+    max-width: 68ch;
+    color: var(--color-text-muted);
+    font-size: 1.06rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .category-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.35rem;
+  }
+
+  .category-tab {
+    display: inline-flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0.55rem 1.15rem;
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    font-weight: 700;
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 2px 0 var(--color-ink);
+  }
+
+  .category-tab:hover {
+    background-color: var(--color-cream-alt);
+  }
+
+  .category-tab.is-active {
+    background-color: var(--color-lime);
+  }
+
+  .audience-jump-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+  }
+
+  .mini-audience-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0.25rem 0.7rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-ink);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .mini-audience-link:hover {
+    background-color: var(--color-lime);
+  }
+
+  .cat-desc {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .services-detailed-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .detailed-service-card {
+    gap: 1.25rem;
+  }
+
+  .detailed-service-card__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .detailed-service-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+    margin-bottom: 0.45rem;
+  }
+
+  .detailed-service-card__summary {
+    color: var(--color-text-muted);
+    margin: 0;
+    max-width: 75ch;
+  }
+
+  .detailed-service-card__specs {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 1.15rem 1.35rem;
+  }
+
+  @media (min-width: 780px) {
+    .detailed-service-card__specs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .spec-col h4 {
+    font-size: 0.92rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+  }
+
+  .spec-col ul {
+    margin: 0;
+    padding-left: 1.15rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .detailed-service-card__demos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .demos-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .demos-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .demo-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 38px;
+    padding: 0.3rem 0.75rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .demo-chip:hover {
+    background-color: var(--color-cream-alt);
+  }
+
+  .demo-chip__tag {
+    background-color: var(--color-lime);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .detailed-service-card__footer {
+    border-top: 1px dashed var(--color-border);
+    padding-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .detailed-service-card__cta {
+    min-width: 210px;
+  }
+</style>

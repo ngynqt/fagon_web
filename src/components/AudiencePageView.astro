@@ -1,0 +1,199 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from './Hero.astro';
+import ServiceSection from './ServiceSection.astro';
+import ProjectCard from './ProjectCard.astro';
+import ProcessSection from './ProcessSection.astro';
+import Pricing from './Pricing.astro';
+import FAQ from './FAQ.astro';
+import ContactForm from './ContactForm.astro';
+import InteractiveGameDemo from './InteractiveGameDemo.astro';
+import BeforeAfterDemo from './BeforeAfterDemo.astro';
+import type { AudienceConfig } from '../data/audiences';
+import { getPortfolioByIds } from '../data/portfolio';
+
+interface Props {
+  audience: AudienceConfig;
+}
+
+const { audience } = Astro.props;
+const demoItems = getPortfolioByIds(audience.demoIds);
+---
+
+<BaseLayout
+  title={audience.seoTitle}
+  description={audience.seoDescription}
+  currentAudienceId={audience.id}
+  ogImage={audience.ogImage}
+>
+  <!-- 1. Hero Section -->
+  <Hero audience={audience} />
+
+  <!-- 2. Tailored Services Section -->
+  <ServiceSection audience={audience} />
+
+  <!-- 3. Demos & Group-Specific Interactive Showcase -->
+  <section class="section" id="demo-section">
+    <div class="container">
+      <div class="section-header section-header--split">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow__dot" aria-hidden="true"></span>
+            <span>SẢN PHẨM MẪU &amp; DEMO MINH HỌA • {audience.title.toUpperCase()}</span>
+          </div>
+          <h2>Trải nghiệm bố cục và sản phẩm mẫu phù hợp</h2>
+        </div>
+        <p class="demo-section__sub">
+          Mỗi mục dưới đây đều ghi rõ nhãn <strong>Demo minh họa</strong> hoặc <strong>Giao diện minh họa</strong> để bạn hình dung cấu trúc thành phẩm thực tế.
+        </p>
+      </div>
+
+      {/* Group-specific flagship interactive module */}
+      {audience.id === 'giao-vien' && <InteractiveGameDemo />}
+      {audience.id === 'nguoi-ban-hang' && <BeforeAfterDemo />}
+
+      {
+        audience.id === 'van-phong' && (
+          <div class="editorial-highlight-banner">
+            <div class="editorial-highlight-banner__header">
+              <span class="badge badge--lime">Chuẩn hóa thông tin doanh nghiệp</span>
+              <span class="badge badge--dark">Mọi số liệu trên mẫu là dữ liệu minh họa</span>
+            </div>
+            <h3>Cấu trúc trình bày Báo cáo &amp; Đề xuất 3 lớp tại Fagon</h3>
+            <div class="grid-3 editorial-highlight-grid">
+              <div class="editorial-highlight-item">
+                <strong>Lớp 1: Tóm tắt điều hành (Executive Summary)</strong>
+                <p>Đặt kết luận và 3 chỉ số quan trọng nhất ngay đầu bài để người ra quyết định nắm bắt nhanh.</p>
+              </div>
+              <div class="editorial-highlight-item">
+                <strong>Lớp 2: Sơ đồ hóa quy trình &amp; So sánh</strong>
+                <p>Chuyển các đoạn văn mô tả dài thành luồng bước đi (flowchart) và bảng đối chiếu Trước / Sau.</p>
+              </div>
+              <div class="editorial-highlight-item">
+                <strong>Lớp 3: File mở chủ động cập nhật</strong>
+                <p>Bàn giao file PowerPoint (PPTX) chỉnh sửa được từng ô chữ và biểu đồ cho các kỳ họp tiếp theo.</p>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        audience.id === 'sinh-vien' && (
+          <div class="editorial-highlight-banner">
+            <div class="editorial-highlight-banner__header">
+              <span class="badge badge--lime">Trung thực học thuật</span>
+              <span class="badge badge--dark">Không bịa số liệu • Không hứa hẹn điểm số</span>
+            </div>
+            <h3>Cách Fagon hỗ trợ bài thuyết trình &amp; đồ án của bạn</h3>
+            <div class="grid-3 editorial-highlight-grid">
+              <div class="editorial-highlight-item">
+                <strong>01. Tôn trọng nội dung gốc của bạn</strong>
+                <p>Toàn bộ kết quả nghiên cứu, khảo sát và lập luận đều giữ nguyên theo tài liệu bạn đã chuẩn bị.</p>
+              </div>
+              <div class="editorial-highlight-item">
+                <strong>02. Phân cấp thị giác rõ ràng</strong>
+                <p>Rút gọn chữ thừa trên slide, biến quy trình nghiên cứu thành sơ đồ để bạn tự tin nói trước hội đồng.</p>
+              </div>
+              <div class="editorial-highlight-item">
+                <strong>03. Dễ dàng tự sửa trước giờ bảo vệ</strong>
+                <p>Nhận file PowerPoint / Canva mở hoàn toàn để bạn chỉnh lại số liệu ngay khi giảng viên góp ý.</p>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        audience.id === 'sang-tao' && (
+          <div class="editorial-highlight-banner">
+            <div class="editorial-highlight-banner__header">
+              <span class="badge badge--lime">Đồng bộ nhân vật &amp; Câu chuyện</span>
+              <span class="badge badge--dark">Duyệt Storyboard trước khi dựng</span>
+            </div>
+            <h3>Từ ý tưởng sơ khai đến thế giới hình ảnh mang dấu ấn riêng</h3>
+            <div class="grid-3 editorial-highlight-grid">
+              <div class="editorial-highlight-item">
+                <strong>Bước A: Kịch bản &amp; Moodboard</strong>
+                <p>Xác định tông màu, ánh sáng và nhịp kể chuyện phù hợp với cảm xúc của tác phẩm.</p>
+              </div>
+              <div class="editorial-highlight-item">
+                <strong>Bước B: Hồ sơ Nhân vật (Character Sheet)</strong>
+                <p>Cố định khuôn mặt, kiểu tóc và trang phục nhân vật để không bị sai lệch qua các khung hình.</p>
+              </div>
+              <div class="editorial-highlight-item">
+                <strong>Bước C: Phân cảnh tĩnh &amp; Chuyển động</strong>
+                <p>Duyệt toàn bộ khung hình storyboard tĩnh trước khi tạo chuyển động video và ghép âm nhạc.</p>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Portfolio Cards for this Audience -->
+      <div class="grid-3">
+        {demoItems.map((item, idx) => <ProjectCard item={item} priorityLoad={idx === 0} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Process Section -->
+  <ProcessSection steps={audience.processSteps} audienceTitle={audience.title} />
+
+  <!-- 5. Pricing Section -->
+  <Pricing audience={audience} />
+
+  <!-- 6. FAQ Section -->
+  <FAQ faqs={audience.faqs} audienceTitle={audience.title} />
+
+  <!-- 7. Pre-selected Consultation Form -->
+  <ContactForm defaultAudienceId={audience.id} />
+</BaseLayout>
+
+<style>
+  .demo-section__sub {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .editorial-highlight-banner {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.35rem, 3vw, 2rem);
+    margin-bottom: 2.25rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .editorial-highlight-banner__header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .editorial-highlight-banner h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+    margin-bottom: 1.15rem;
+  }
+
+  .editorial-highlight-item {
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 1.15rem;
+  }
+
+  .editorial-highlight-item strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.96rem;
+  }
+
+  .editorial-highlight-item p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+  }
+</style>

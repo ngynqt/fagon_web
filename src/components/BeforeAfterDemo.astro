@@ -1,0 +1,481 @@
+---
+// Before / After Garment Comparison Demo for Shop Owners (Section 7.2)
+// Uses strictly corresponding visual pair of the exact same cream linen double-breasted blazer.
+// Supports touch slider, keyboard arrow keys, and side-by-side 2-image fallback view.
+---
+
+<div class="ba-showcase" id="before-after-demo" role="region" aria-labelledby="ba-showcase-title">
+  <div class="ba-showcase__header">
+    <div>
+      <div class="ba-showcase__badges">
+        <span class="badge badge--lime">Demo minh họa</span>
+        <span class="badge badge--dark">Cùng một mẫu áo Blazer Linen Kem</span>
+      </div>
+      <h3 id="ba-showcase-title" class="ba-showcase__title">
+        So sánh Before / After: Từ ảnh chụp treo móc sang ảnh lên dáng Studio
+      </h3>
+      <p class="ba-showcase__lead">
+        Kéo thanh trượt (bằng cảm ứng, chuột hoặc phím mũi tên trái/phải) hoặc bấm chuyển sang chế độ <strong>Xem song song 2 ảnh</strong>.
+      </p>
+    </div>
+
+    <!-- Mode Switcher: Slider vs Side-by-side 2 images -->
+    <div class="ba-mode-switch" role="group" aria-label="Chế độ xem ảnh Before và After">
+      <button
+        type="button"
+        class="btn btn--dark ba-mode-btn is-active"
+        id="ba-mode-slider-btn"
+        aria-pressed="true"
+      >
+        Thanh kéo so sánh
+      </button>
+      <button
+        type="button"
+        class="btn btn--outline ba-mode-btn"
+        id="ba-mode-side-btn"
+        aria-pressed="false"
+      >
+        Xem song song 2 ảnh
+      </button>
+    </div>
+  </div>
+
+  <div class="ba-showcase__grid">
+    <!-- Left Column: Visual Comparison -->
+    <div class="ba-visual-col">
+      <!-- Mode 1: Interactive Slider -->
+      <div id="ba-slider-view" class="ba-slider-container" style="--split-percent: 50%;">
+        <div class="ba-slider-stage">
+          <!-- Base Layer: AFTER (Model Styled) -->
+          <img
+            src="/assets/demos/shop-after-model.webp"
+            alt="Sau khi thực hiện: Cùng mẫu áo Blazer Linen màu kem lên dáng người mẫu studio, giữ nguyên cổ ve chữ K, 4 cúc sừng và 2 túi nắp"
+            width="600"
+            height="750"
+            class="ba-img ba-img--after"
+          />
+
+          <!-- Clipped Layer: BEFORE (Hanger Flat Photo) -->
+          <div class="ba-before-clip" aria-hidden="true">
+            <img
+              src="/assets/demos/shop-before-hanger.webp"
+              alt=""
+              width="600"
+              height="750"
+              class="ba-img ba-img--before"
+            />
+          </div>
+
+          <!-- Visual Divider Handle -->
+          <div class="ba-divider" aria-hidden="true">
+            <div class="ba-divider__handle">
+              <span>↔</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accessible Range Control for Touch, Mouse & Keyboard -->
+        <div class="ba-controls">
+          <label for="ba-range-input" class="ba-controls__label">
+            Vị trí thanh kéo so sánh: <strong id="ba-range-value-text">50%</strong>
+          </label>
+          <input
+            type="range"
+            id="ba-range-input"
+            class="ba-range-input"
+            min="0"
+            max="100"
+            value="50"
+            step="1"
+            aria-label="Thanh kéo so sánh tỷ lệ hiển thị ảnh trước và sau"
+          />
+          <div class="ba-preset-buttons">
+            <button type="button" class="mini-preset-btn" data-ba-preset="100">
+              Xem 100% Ảnh treo móc (Trước)
+            </button>
+            <button type="button" class="mini-preset-btn" data-ba-preset="50">
+              So sánh 50 / 50
+            </button>
+            <button type="button" class="mini-preset-btn" data-ba-preset="0">
+              Xem 100% Ảnh lên mẫu (Sau)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode 2: Side-by-Side Two Images View (Also visible in <noscript> or when user prefers side-by-side) -->
+      <div id="ba-side-by-side-view" class="ba-side-grid" hidden>
+        <figure class="ba-figure">
+          <img
+            src="/assets/demos/shop-before-hanger.webp"
+            alt="Ảnh Trước: Áo Blazer Linen màu kem 4 cúc chụp trên móc gỗ"
+            width="600"
+            height="750"
+          />
+          <figcaption>
+            <strong>Trước (Đầu vào):</strong> Ảnh chụp sản phẩm treo móc phẳng, rõ cấu trúc cổ áo, 4 cúc và 2 túi.
+          </figcaption>
+        </figure>
+        <figure class="ba-figure">
+          <img
+            src="/assets/demos/shop-after-model.webp"
+            alt="Ảnh Sau: Cùng mẫu áo Blazer Linen màu kem 4 cúc khi lên dáng người mẫu studio"
+            width="600"
+            height="750"
+          />
+          <figcaption>
+            <strong>Sau (Đầu ra):</strong> Lên dáng người mẫu giúp khách hình dung độ đứng phom vai và chiều dài áo.
+          </figcaption>
+        </figure>
+      </div>
+
+      <noscript>
+        <div class="ba-side-grid" style="margin-top: 1rem;">
+          <figure class="ba-figure">
+            <img
+              src="/assets/demos/shop-before-hanger.webp"
+              alt="Ảnh Trước: Áo Blazer Linen màu kem treo móc"
+              width="600"
+              height="750"
+            />
+            <figcaption>Trước: Ảnh chụp treo móc</figcaption>
+          </figure>
+          <figure class="ba-figure">
+            <img
+              src="/assets/demos/shop-after-model.webp"
+              alt="Ảnh Sau: Cùng mẫu áo Blazer Linen màu kem lên dáng người mẫu"
+              width="600"
+              height="750"
+            />
+            <figcaption>Sau: Ảnh lên dáng người mẫu</figcaption>
+          </figure>
+        </div>
+      </noscript>
+    </div>
+
+    <!-- Right Column: Quality Control & Approval Workflow Explanation (Section 7.2) -->
+    <div class="ba-info-col">
+      <div class="ba-info-card">
+        <span class="badge badge--lime">Quy trình kiểm soát chất lượng</span>
+        <h4>Minh bạch về độ chính xác &amp; Bước duyệt mẫu</h4>
+        <p>
+          Công nghệ AI hỗ trợ tạo dáng người mẫu và bối cảnh rất tốt từ ảnh chụp phẳng, nhưng <strong>Fagon không hứa hẹn giữ chính xác tuyệt đối 100% mọi chi tiết nhỏ</strong> trong mọi trường hợp (đặc biệt với chất liệu ren mảnh, thêu nổi phức tạp hoặc logo chữ quá nhỏ).
+        </p>
+
+        <h5>3 bước kiểm tra trước khi dựng Video:</h5>
+        <ol class="ba-info-steps">
+          <li>
+            <strong>Đánh giá ảnh đầu vào:</strong> Kiểm tra độ nét, ánh sáng và báo trước nếu họa tiết phức tạp cần xử lý kỹ (phụ thu 30–50%).
+          </li>
+          <li>
+            <strong>Gửi ảnh người mẫu tĩnh để duyệt trước:</strong> Chủ shop kiểm tra tỷ lệ phom dáng, màu sắc, cổ áo, tay áo trên ảnh tĩnh.
+          </li>
+          <li>
+            <strong>Tạo chuyển động video sau khi duyệt ảnh:</strong> Chỉ khi ảnh tĩnh đã đúng ý, Fagon mới tiến hành dựng chuyển động bước đi / xoay dáng và ghép nhạc.
+          </li>
+        </ol>
+
+        <div class="ba-info-card__cta">
+          <a
+            href="#yeu-cau-tu-van"
+            class="btn btn--primary"
+            data-select-audience="nguoi-ban-hang"
+            data-select-service="anh-nguoi-mau-ai"
+            data-select-service-label="Ảnh người mẫu AI & Video thời trang"
+          >
+            Gửi mẫu áo của shop để tư vấn →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initBeforeAfterDemo() {
+    const container = document.getElementById('ba-slider-view');
+    const sideBySide = document.getElementById('ba-side-by-side-view');
+    const rangeInput = document.getElementById('ba-range-input') as HTMLInputElement | null;
+    const valueText = document.getElementById('ba-range-value-text');
+    const sliderModeBtn = document.getElementById('ba-mode-slider-btn');
+    const sideModeBtn = document.getElementById('ba-mode-side-btn');
+    const presetBtns = document.querySelectorAll<HTMLButtonElement>('[data-ba-preset]');
+
+    function updateSplit(percent: number) {
+      const clamped = Math.max(0, Math.min(100, percent));
+      if (container) {
+        container.style.setProperty('--split-percent', `${clamped}%`);
+      }
+      if (rangeInput) {
+        rangeInput.value = String(clamped);
+      }
+      if (valueText) {
+        valueText.textContent = `${clamped}%`;
+      }
+    }
+
+    rangeInput?.addEventListener('input', () => {
+      updateSplit(Number(rangeInput.value));
+    });
+
+    presetBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const val = Number(btn.getAttribute('data-ba-preset') || '50');
+        updateSplit(val);
+      });
+    });
+
+    sliderModeBtn?.addEventListener('click', () => {
+      if (container) container.hidden = false;
+      if (sideBySide) sideBySide.hidden = true;
+      sliderModeBtn.className = 'btn btn--dark ba-mode-btn is-active';
+      sliderModeBtn.setAttribute('aria-pressed', 'true');
+      if (sideModeBtn) {
+        sideModeBtn.className = 'btn btn--outline ba-mode-btn';
+        sideModeBtn.setAttribute('aria-pressed', 'false');
+      }
+    });
+
+    sideModeBtn?.addEventListener('click', () => {
+      if (container) container.hidden = true;
+      if (sideBySide) sideBySide.hidden = false;
+      sideModeBtn.className = 'btn btn--dark ba-mode-btn is-active';
+      sideModeBtn.setAttribute('aria-pressed', 'true');
+      if (sliderModeBtn) {
+        sliderModeBtn.className = 'btn btn--outline ba-mode-btn';
+        sliderModeBtn.setAttribute('aria-pressed', 'false');
+      }
+    });
+  }
+
+  initBeforeAfterDemo();
+</script>
+
+<style>
+  .ba-showcase {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.35rem, 3vw, 2.25rem);
+    margin-bottom: 2.5rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .ba-showcase__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .ba-showcase__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .ba-showcase__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+    margin-bottom: 0.4rem;
+  }
+
+  .ba-showcase__lead {
+    color: var(--color-text-muted);
+    margin: 0;
+    font-size: 0.94rem;
+  }
+
+  .ba-mode-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .ba-mode-btn {
+    min-height: 44px;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.86rem;
+  }
+
+  .ba-showcase__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 960px) {
+    .ba-showcase__grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+
+  .ba-slider-stage {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+    aspect-ratio: 4 / 5;
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    user-select: none;
+    background-color: var(--color-cream);
+  }
+
+  .ba-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ba-before-clip {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--split-percent, 50%)) 0 0);
+  }
+
+  .ba-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--split-percent, 50%);
+    width: 3px;
+    background-color: var(--color-ink);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .ba-divider__handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--color-lime);
+    border: 2px solid var(--color-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: var(--color-ink);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .ba-controls {
+    max-width: 560px;
+    margin: 1rem auto 0 auto;
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+  }
+
+  .ba-controls__label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+  }
+
+  .ba-range-input {
+    width: 100%;
+    height: 32px;
+    accent-color: var(--color-ink);
+    cursor: pointer;
+  }
+
+  .ba-preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.55rem;
+  }
+
+  .mini-preset-btn {
+    flex: 1 1 auto;
+    min-height: 40px;
+    padding: 0.35rem 0.65rem;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-ink);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .mini-preset-btn:hover {
+    background-color: var(--color-lime);
+  }
+
+  .ba-side-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 560px) {
+    .ba-side-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .ba-figure {
+    margin: 0;
+    background-color: var(--color-cream);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .ba-figure figcaption {
+    padding: 0.75rem;
+    font-size: 0.84rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .ba-info-card {
+    background-color: var(--color-cream);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+  }
+
+  .ba-info-card h4 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    margin: 0.65rem 0 0.5rem 0;
+  }
+
+  .ba-info-card p {
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+  }
+
+  .ba-info-card h5 {
+    margin: 1.15rem 0 0.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  .ba-info-steps {
+    margin: 0 0 1.35rem 0;
+    padding-left: 1.2rem;
+    font-size: 0.88rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .ba-info-card__cta .btn {
+    width: 100%;
+  }
+</style>

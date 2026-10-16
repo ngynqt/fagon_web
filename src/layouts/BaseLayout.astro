@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import type { AudienceId } from '../data/audiences';
+import { siteConfig } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  currentAudienceId?: AudienceId;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description,
+  currentAudienceId,
+  ogImage = '/og-image.svg',
+} = Astro.props;
+
+const configuredSiteUrl = import.meta.env.PUBLIC_SITE_URL?.trim().replace(/\/$/, '');
+const pathname = Astro.url.pathname;
+const canonicalUrl = configuredSiteUrl ? `${configuredSiteUrl}${pathname}` : undefined;
+const ogImageUrl = configuredSiteUrl ? `${configuredSiteUrl}${ogImage}` : ogImage;
+---
+
+<!doctype html>
+<html lang={siteConfig.language} data-audience-page={currentAudienceId || ''}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#F6F3EB" />
+
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content={siteConfig.brandName} />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:alt" content={`${siteConfig.brandName} — ${siteConfig.tagline}`} />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Google Fonts: Newsreader (Serif Display) & Be Vietnam Pro (Sans) with full Vietnamese support -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,600;0,6..72,700;1,6..72,600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">
+      Bỏ qua điều hướng, đến nội dung chính
+    </a>
+
+    <Header currentAudienceId={currentAudienceId} currentPath={pathname} />
+
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    {
+      currentAudienceId && (
+        <script is:inline define:vars={{ currentAudienceId }}>
+          try {
+            window.localStorage.setItem('fagon_last_audience', currentAudienceId);
+          } catch (e) {
+            // Ignore when browser blocks localStorage
+          }
+        </script>
+      )
+    }
+  </body>
+</html>

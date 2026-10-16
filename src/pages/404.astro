@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { audiences } from '../data/audiences';
+---
+
+<BaseLayout
+  title="Không tìm thấy trang (404) | Fagon"
+  description="Đường dẫn bạn truy cập không tồn tại hoặc đã được thay đổi. Quay về trang chủ Fagon hoặc chọn nhóm nhu cầu phù hợp."
+>
+  <section class="section not-found">
+    <div class="container not-found__inner">
+      <div class="eyebrow">
+        <span class="eyebrow__dot" aria-hidden="true"></span>
+        <span>LỖI 404 • KHÔNG TÌM THẤY TRANG</span>
+      </div>
+
+      <h1>Đường dẫn này không tồn tại hoặc đã được chuyển đi.</h1>
+      <p class="not-found__desc">
+        Bạn có thể quay về trang chủ Fagon, tra cứu danh mục dịch vụ hoặc chọn trực tiếp một trong 5 nhóm nhu cầu bên dưới:
+      </p>
+
+      <div class="not-found__primary">
+        <a href="/" class="btn btn--primary">
+          ← Về trang chủ Fagon
+        </a>
+        <a href="/dich-vu" class="btn btn--outline">
+          Xem tất cả dịch vụ
+        </a>
+      </div>
+
+      <div class="not-found__groups">
+        <h2>Hoặc đi thẳng tới nhóm nhu cầu của bạn:</h2>
+        <div class="grid-3">
+          {
+            audiences.map((aud) => (
+              <a href={`/${aud.slug}`} class="card not-found__card">
+                <div>
+                  <span class="badge badge--lime">Nhóm {aud.order}</span>
+                  <h3>{aud.title}</h3>
+                  <p>{aud.homeSummary}</p>
+                </div>
+                <span class="not-found__go">Mở trang {aud.title} →</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found__inner {
+    max-width: 960px;
+  }
+
+  .not-found__desc {
+    font-size: 1.08rem;
+    color: var(--color-text-muted);
+    max-width: 58ch;
+    margin-bottom: 1.75rem;
+  }
+
+  .not-found__primary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 3rem;
+  }
+
+  .not-found__groups h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .not-found__card {
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .not-found__card:hover {
+    background-color: var(--color-lime);
+    transform: translateY(-2px);
+  }
+
+  .not-found__card h3 {
+    margin-top: 0.65rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .not-found__card p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .not-found__go {
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,412 @@
+---
+import type { PortfolioItem } from '../data/portfolio';
+
+interface Props {
+  item: PortfolioItem;
+  priorityLoad?: boolean;
+}
+
+const { item, priorityLoad = false } = Astro.props;
+const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
+---
+
+<article class="card project-card" data-demo-code={item.code}>
+  <div class="project-card__main">
+    <!-- Top Meta Bar: Code + Strict Demo Label (Section 9) -->
+    <div class="project-card__meta">
+      <span class="project-card__code">Mã: {item.code}</span>
+      <span
+        class:list={[
+          'badge',
+          item.demoLabel === 'Demo minh họa' ? 'badge--lime' : 'badge--dark',
+        ]}
+      >
+        {item.demoLabel}
+      </span>
+    </div>
+
+    <!-- Fixed Aspect Ratio Media Frame to prevent layout shift (CLS = 0) -->
+    <div class="project-card__media" id={item.id}>
+      {
+        item.videoPath ? (
+          <div class="project-card__media-toggle-container">
+            <div class="project-card__media-view project-card__media-view--video" data-view="video">
+              <video
+                src={item.videoPath}
+                poster={item.posterPath || item.resourcePath}
+                controls
+                preload="metadata"
+                playsinline
+                class="project-card__video"
+                aria-label={`${item.title} — Video demo thực tế`}
+              >
+                Trình duyệt của bạn không hỗ trợ thẻ video HTML5.
+              </video>
+            </div>
+            {item.resourcePath && (
+              <div class="project-card__media-view project-card__media-view--image" data-view="image" hidden>
+                <img
+                  src={item.resourcePath}
+                  alt={`Bảng phân cảnh Storyboard: ${item.title}`}
+                  width="800"
+                  height="500"
+                  loading="lazy"
+                  decoding="async"
+                  class="project-card__img"
+                />
+              </div>
+            )}
+            <div class="project-card__media-switcher">
+              <button
+                type="button"
+                class="media-switch-btn is-active"
+                data-switch-to="video"
+                aria-label="Xem video phát thực tế"
+              >
+                ▶ Video 60s
+              </button>
+              <button
+                type="button"
+                class="media-switch-btn"
+                data-switch-to="image"
+                aria-label="Xem bảng phân cảnh Storyboard"
+              >
+                🖼 Storyboard
+              </button>
+            </div>
+          </div>
+        ) : isImagePreview ? (
+          <img
+            src={item.resourcePath}
+            alt={`${item.demoLabel}: ${item.title}`}
+            width="800"
+            height="500"
+            loading={priorityLoad ? 'eager' : 'lazy'}
+            decoding="async"
+            class="project-card__img"
+          />
+        ) : (
+          <div class="project-card__visual-box">
+            <span class="project-card__eyebrow">{item.visualData.eyebrow}</span>
+            <strong class="project-card__visual-headline">{item.visualData.headline}</strong>
+            <p class="project-card__visual-sub">{item.visualData.subheadline}</p>
+            <span class="badge badge--lime">{item.visualData.accentTag}</span>
+          </div>
+        )
+      }
+    </div>
+
+    <div class="project-card__content">
+      <span class="project-card__service-tag">{item.serviceLabel}</span>
+      <h3 class="project-card__title">{item.title}</h3>
+      <p class="project-card__desc">{item.description}</p>
+
+      <ul class="project-card__points">
+        {item.visualData.metricsOrPoints.map((pt) => <li>{pt}</li>)}
+      </ul>
+
+      <div class="project-card__status">
+        <strong>Trạng thái tài nguyên:</strong> {item.status}
+      </div>
+    </div>
+  </div>
+
+  <div class="project-card__actions">
+    <div class="project-card__buttons">
+      {
+        /* Rule 9: Only show experience button when an actual interactive feature exists */
+        item.liveExperienceAnchor && (
+          <a href={item.liveExperienceAnchor} class="btn btn--primary project-card__btn">
+            {item.videoPath ? 'Xem video ngay ▶' : 'Trải nghiệm demo thật →'}
+          </a>
+        )
+      }
+      <a
+        href="#yeu-cau-tu-van"
+        class="btn btn--outline project-card__btn"
+        data-select-service={item.serviceId}
+        data-select-service-label={item.serviceLabel}
+      >
+        Đặt làm mẫu tương tự
+      </a>
+    </div>
+
+    <details class="project-card__prompt">
+      <summary>Prompt tạo tài nguyên bổ sung (dành cho chủ dự án)</summary>
+      <div class="project-card__prompt-body">
+        <p><strong>Tài nguyên chờ bổ sung:</strong> {item.assetGenerationPrompt.missingAssetDescription}</p>
+        <p>
+          <strong>Công cụ gợi ý:</strong> {item.assetGenerationPrompt.recommendedTool} •
+          <strong>Tỷ lệ:</strong> {item.assetGenerationPrompt.aspectRatio}
+        </p>
+        <pre class="project-card__prompt-code"><code>{item.assetGenerationPrompt.promptText}</code></pre>
+      </div>
+    </details>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    gap: 1.25rem;
+  }
+
+  .project-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .project-card__code {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    font-family: monospace;
+  }
+
+  .project-card__media {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background-color: var(--color-cream);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .project-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-card__visual-box {
+    padding: 1.35rem;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.45rem;
+  }
+
+  .project-card__eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--color-lime);
+  }
+
+  .project-card__visual-headline {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    line-height: 1.25;
+    color: var(--color-cream);
+  }
+
+  .project-card__visual-sub {
+    font-size: 0.84rem;
+    color: #d0d3ca;
+    margin: 0 0 0.35rem 0;
+  }
+
+  .project-card__service-tag {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .project-card__title {
+    margin-bottom: 0.5rem;
+  }
+
+  .project-card__desc {
+    font-size: 0.93rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.9rem;
+  }
+
+  .project-card__points {
+    margin: 0 0 1rem 0;
+    padding-left: 1.15rem;
+    font-size: 0.86rem;
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .project-card__status {
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-border);
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+
+  .project-card__actions {
+    border-top: 1px dashed var(--color-border);
+    padding-top: 1rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .project-card__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .project-card__btn {
+    flex: 1 1 auto;
+    font-size: 0.88rem;
+    padding: 0.55rem 0.95rem;
+  }
+
+  .project-card__prompt {
+    font-size: 0.8rem;
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+  }
+
+  .project-card__prompt summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+  }
+
+  .project-card__prompt-body {
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .project-card__prompt-body p {
+    margin: 0 0 0.4rem 0;
+    font-size: 0.78rem;
+  }
+
+  .project-card__prompt-code {
+    margin: 0;
+    padding: 0.55rem;
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .project-card__media-toggle-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-card__media-view {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+  }
+
+  .project-card__media-view[hidden] {
+    display: none !important;
+  }
+
+  .project-card__video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: #000;
+    display: block;
+  }
+
+  .project-card__media-switcher {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.35rem;
+    background-color: rgba(25, 27, 24, 0.88);
+    backdrop-filter: blur(8px);
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    z-index: 5;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .media-switch-btn {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: #d0d3ca;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .media-switch-btn:hover {
+    color: #fff;
+  }
+
+  .media-switch-btn.is-active {
+    background-color: var(--color-lime);
+    color: var(--color-ink);
+  }
+</style>
+
+<script>
+  function initMediaSwitcher() {
+    document.querySelectorAll('.project-card__media-toggle-container').forEach((container) => {
+      const videoView = container.querySelector('[data-view="video"]') as HTMLElement | null;
+      const imageView = container.querySelector('[data-view="image"]') as HTMLElement | null;
+      const buttons = container.querySelectorAll<HTMLButtonElement>('[data-switch-to]');
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-switch-to');
+          buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          if (target === 'video') {
+            if (videoView) videoView.hidden = false;
+            if (imageView) imageView.hidden = true;
+          } else {
+            if (videoView) {
+              videoView.hidden = true;
+              const vid = videoView.querySelector('video');
+              if (vid && !vid.paused) vid.pause();
+            }
+            if (imageView) imageView.hidden = false;
+          }
+        });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMediaSwitcher);
+  } else {
+    initMediaSwitcher();
+  }
+</script>

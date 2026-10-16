@@ -1,0 +1,237 @@
+---
+import { audiences, type AudienceConfig } from '../data/audiences';
+
+interface Props {
+  audience: AudienceConfig;
+}
+
+const { audience } = Astro.props;
+const { hero } = audience;
+---
+
+<section class="section audience-hero">
+  <div class="container">
+    <!-- Top Visual Banner Showcase Frame (Eager loaded above the fold, fixed 1024x394 aspect ratio) -->
+    <div class="audience-hero__banner-frame">
+      <img
+        src={audience.bannerImage}
+        alt={audience.bannerAlt}
+        width="1024"
+        height="394"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="audience-hero__banner-img"
+      />
+    </div>
+
+    <!-- Real HTML Text & Interactive Consultation Navigation (Never relying on image hotspots) -->
+    <div class="audience-hero__grid">
+      <div class="audience-hero__content">
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>{hero.eyebrow}</span>
+        </div>
+
+        <h1 class="audience-hero__title">{hero.title}</h1>
+        <p class="audience-hero__desc">{hero.description}</p>
+
+        <div class="audience-hero__actions">
+          <a href="#yeu-cau-tu-van" class="btn btn--primary">
+            {hero.primaryCtaLabel}
+          </a>
+          <a href={hero.secondaryCtaAnchor} class="btn btn--outline">
+            {hero.secondaryCtaLabel}
+          </a>
+          <a href="/dich-vu" class="btn btn--outline">
+            Xem tất cả dịch vụ
+          </a>
+        </div>
+
+        <div class="audience-hero__note" role="note">
+          <strong>Cam kết thực hiện:</strong> {hero.highlightNote}
+        </div>
+      </div>
+
+      <aside class="audience-hero__aside" aria-label="Tóm tắt hành trình tư vấn">
+        <div class="hero-summary-box">
+          <div class="hero-summary-box__header">
+            <span class="badge badge--lime">Nhóm {audience.order}</span>
+            <span class="hero-summary-box__group">{audience.title}</span>
+          </div>
+          <p class="hero-summary-box__lead">
+            Hành trình trên trang này được thiết kế riêng cho <strong>{audience.title}</strong>:
+          </p>
+          <ol class="hero-summary-box__steps">
+            <li><a href="#dich-vu-nhom">Dịch vụ phù hợp ({audience.services.length} hạng mục)</a></li>
+            <li><a href="#demo-section">Sản phẩm mẫu &amp; Demo minh họa</a></li>
+            <li><a href="#quy-trinh-nhom">Quy trình 3 bước &amp; Cam kết chốt trước</a></li>
+            <li><a href="#bang-gia">Cách tính giá &amp; Ưu đãi hiện hành</a></li>
+            <li><a href="#faq-nhom">Câu hỏi thường gặp</a></li>
+            <li><a href="#yeu-cau-tu-van">Biểu mẫu tư vấn (đã chọn sẵn {audience.title})</a></li>
+          </ol>
+          <div class="hero-summary-box__switch">
+            <span>Không phải nhu cầu của bạn?</span>
+            <div class="hero-summary-box__chips">
+              {
+                audiences
+                  .filter((a) => a.id !== audience.id)
+                  .map((other) => (
+                    <a href={`/${other.slug}`} class="mini-chip">
+                      {other.title}
+                    </a>
+                  ))
+              }
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .audience-hero {
+    padding-block: clamp(2rem, 4.5vw, 3.75rem);
+    background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-cream-alt) 100%);
+  }
+
+  .audience-hero__banner-frame {
+    width: 100%;
+    aspect-ratio: 1024 / 394;
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    margin-bottom: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+
+  .audience-hero__banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .audience-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+    align-items: start;
+  }
+
+  @media (min-width: 960px) {
+    .audience-hero__grid {
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 3rem;
+    }
+  }
+
+  .audience-hero__title {
+    margin-bottom: 0.75rem;
+  }
+
+  .audience-hero__desc {
+    font-size: clamp(1.08rem, 1.6vw, 1.25rem);
+    color: var(--color-text-muted);
+    max-width: 56ch;
+    margin-bottom: 1.65rem;
+  }
+
+  .audience-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .audience-hero__note {
+    background-color: var(--color-surface);
+    border-left: 4px solid var(--color-lime);
+    border-top: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.9rem 1.15rem;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.92rem;
+    max-width: 60ch;
+  }
+
+  .hero-summary-box {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .hero-summary-box__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .hero-summary-box__group {
+    font-weight: 800;
+    font-size: 1rem;
+  }
+
+  .hero-summary-box__lead {
+    font-size: 0.92rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-summary-box__steps {
+    margin: 0 0 1.25rem 0;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.45rem;
+    font-size: 0.9rem;
+  }
+
+  .hero-summary-box__steps a {
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .hero-summary-box__steps a:hover {
+    text-decoration: underline;
+    color: #000;
+  }
+
+  .hero-summary-box__switch {
+    border-top: 1px dashed var(--color-border);
+    padding-top: 0.9rem;
+    font-size: 0.84rem;
+    color: var(--color-text-muted);
+  }
+
+  .hero-summary-box__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .mini-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0.25rem 0.65rem;
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-ink);
+  }
+
+  .mini-chip:hover {
+    background-color: var(--color-lime);
+  }
+</style>

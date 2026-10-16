@@ -1,0 +1,522 @@
+---
+import type { AudienceConfig } from '../data/audiences';
+import {
+  customQuoteNotice,
+  formatVndRange,
+  pricingTermsNotes,
+  shopVideoPricingTiers,
+  shopVideoPromoConfig,
+} from '../data/pricing';
+
+interface Props {
+  audience: AudienceConfig;
+}
+
+const { audience } = Astro.props;
+const showShopVideoPackages = audience.pricingMode === 'shop-video-plus-custom';
+---
+
+<section
+  class="section"
+  id="bang-gia"
+  data-promo-enabled={shopVideoPromoConfig.enabled ? 'true' : 'false'}
+  data-promo-discount={shopVideoPromoConfig.discountPercent}
+  data-promo-expires={shopVideoPromoConfig.expiresAtIso}
+  data-promo-state="default-original"
+>
+  <div class="container">
+    <div class="section-header section-header--split">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>CÁCH TÍNH GIÁ • {audience.title.toUpperCase()}</span>
+        </div>
+        <h2>{audience.pricingExplanation.headline}</h2>
+      </div>
+      <p class="pricing-lead">{audience.pricingExplanation.summary}</p>
+    </div>
+
+    {
+      showShopVideoPackages && (
+        <div class="shop-pricing-block">
+          <!-- Promo Banner: Hidden by default when JS is disabled; enabled synchronously before paint if current time < 2026-10-21T00:00:00+07:00 -->
+          <div class="promo-callout" id="shop-promo-banner" aria-live="polite">
+            <div class="promo-callout__badge">
+              ƯU ĐÃI ĐANG ÁP DỤNG: GIẢM {shopVideoPromoConfig.discountPercent}%
+            </div>
+            <div class="promo-callout__content">
+              <strong>
+                Áp dụng riêng cho 3 gói Video phục vụ Shop đến hết ngày{' '}
+                {shopVideoPromoConfig.expiresDisplayLabel}
+              </strong>
+              <p>{shopVideoPromoConfig.scopeNote}</p>
+            </div>
+          </div>
+
+          <div class="grid-3 pricing-tiers">
+            {shopVideoPricingTiers.map((tier) => {
+              const originalFormatted = formatVndRange(tier.originalMin, tier.originalMax);
+              return (
+                <article
+                  class:list={['card', 'pricing-card', { 'pricing-card--featured': Boolean(tier.badge) }]}
+                  data-pricing-tier={tier.id}
+                  data-original-min={tier.originalMin}
+                  data-original-max={tier.originalMax}
+                >
+                  <div>
+                    <div class="pricing-card__header">
+                      <div>
+                        <span class="pricing-card__duration">{tier.duration}</span>
+                        <h3 class="pricing-card__name">{tier.name}</h3>
+                      </div>
+                      {tier.badge && <span class="badge badge--lime">{tier.badge}</span>}
+                    </div>
+
+                    <!-- Price Display Box: Defaults to original price when JS is off; updates synchronously via inline script without flicker -->
+                    <div class="pricing-card__price-box">
+                      <div class="pricing-card__original-line">
+                        <span class="pricing-card__price-label" data-role="price-label">
+                          Đơn giá tiêu chuẩn:
+                        </span>
+                        <span class="pricing-card__original-value" data-role="original-price">
+                          {originalFormatted}
+                        </span>
+                        <span class="pricing-card__unit">/{tier.unit}</span>
+                      </div>
+
+                      <div class="pricing-card__promo-line" data-role="promo-line">
+                        <span class="badge badge--lime" data-role="discount-badge">
+                          -{shopVideoPromoConfig.discountPercent}%
+                        </span>
+                        <strong class="pricing-card__discounted-value" data-role="discounted-price">
+                          {originalFormatted}
+                        </strong>
+                        <span class="pricing-card__unit">/{tier.unit}</span>
+                      </div>
+                    </div>
+
+                    <div class="pricing-card__input-req">
+                      <strong>Đầu vào phù hợp:</strong> {tier.inputRequirement}
+                    </div>
+
+                    <ul class="pricing-card__list">
+                      {tier.deliverables.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div class="pricing-card__footer">
+                    <a
+                      href="#yeu-cau-tu-van"
+                      class="btn btn--primary pricing-card__cta"
+                      data-select-audience="nguoi-ban-hang"
+                      data-select-service="video-thoi-trang-quang-cao-shop"
+                      data-select-service-label={`Video shop — ${tier.name} (${tier.duration})`}
+                    >
+                      Chọn {tier.name} →
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <div class="pricing-notes-card">
+            <h3>Ghi chú &amp; Điều kiện áp dụng cho gói Video Shop</h3>
+            <ul class="pricing-notes-list">
+              {pricingTermsNotes.map((note) => (
+                <li>{note}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Custom Quote Section for Services without Fixed Price Table -->
+    <div class="custom-quote-box">
+      <div class="custom-quote-box__left">
+        <span class="badge badge--dark">{customQuoteNotice.title}</span>
+        <h3 class="custom-quote-box__title">
+          {
+            showShopVideoPackages
+              ? 'Các hạng mục Ảnh lẻ, CGI sản phẩm, Banner & Website Lookbook: Nhận báo giá theo yêu cầu'
+              : 'Báo giá minh bạch sau khi nắm rõ khối lượng & đầu vào thực tế'
+          }
+        </h3>
+        <p class="custom-quote-box__desc">{customQuoteNotice.description}</p>
+        <div class="custom-quote-box__factors">
+          <strong>Các yếu tố dùng để tính báo giá cho {audience.title}:</strong>
+          <ul>
+            {audience.pricingExplanation.factors.map((f) => <li>{f}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <div class="custom-quote-box__right">
+        <div class="custom-quote-box__card">
+          <h4>Nguyên tắc báo giá tại Fagon</h4>
+          <ul>
+            <li>Không phát sinh chi phí ẩn ngoài phạm vi đã thống nhất ở Bước 2.</li>
+            <li>Đặt cọc 50–100% theo thỏa thuận trước khi triển khai.</li>
+            <li>Bao gồm tối đa 02 lượt chỉnh sửa trong phạm vi phương án đã chốt.</li>
+          </ul>
+          <a href="#yeu-cau-tu-van" class="btn btn--primary custom-quote-box__btn">
+            Nhận báo giá theo yêu cầu →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Synchronous inline script so static page evaluates promo expiry at access time with zero visual flicker -->
+  <script is:inline>
+    (function () {
+      function formatVnd(num) {
+        return Math.round(num)
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      }
+
+      function applyPricingState(referenceTime) {
+        var section = document.getElementById('bang-gia');
+        if (!section) return null;
+
+        var enabled = section.getAttribute('data-promo-enabled') === 'true';
+        var discount = Number(section.getAttribute('data-promo-discount') || '0');
+        var expiresIso = section.getAttribute('data-promo-expires') || '';
+
+        var nowMs =
+          referenceTime !== undefined && referenceTime !== null
+            ? typeof referenceTime === 'number'
+              ? referenceTime
+              : new Date(referenceTime).getTime()
+            : window.__FAGON_TEST_NOW__
+              ? new Date(window.__FAGON_TEST_NOW__).getTime()
+              : Date.now();
+
+        var expiryMs = new Date(expiresIso).getTime();
+        var isActive = enabled && discount > 0 && !isNaN(nowMs) && !isNaN(expiryMs) && nowMs < expiryMs;
+
+        section.setAttribute('data-promo-state', isActive ? 'active' : 'expired');
+
+        var cards = section.querySelectorAll('[data-pricing-tier]');
+        var results = [];
+
+        for (var i = 0; i < cards.length; i++) {
+          var card = cards[i];
+          var origMin = Number(card.getAttribute('data-original-min') || '0');
+          var origMax = Number(card.getAttribute('data-original-max') || '0');
+          var factor = (100 - discount) / 100;
+          var discMin = Math.round(origMin * factor);
+          var discMax = Math.round(origMax * factor);
+
+          var origText = formatVnd(origMin) + '–' + formatVnd(origMax) + 'đ';
+          var discText = formatVnd(discMin) + '–' + formatVnd(discMax) + 'đ';
+
+          var origEl = card.querySelector('[data-role="original-price"]');
+          var discEl = card.querySelector('[data-role="discounted-price"]');
+          var labelEl = card.querySelector('[data-role="price-label"]');
+
+          if (origEl) origEl.textContent = origText;
+          if (discEl) discEl.textContent = discText;
+          if (labelEl) {
+            labelEl.textContent = isActive ? 'Giá gốc:' : 'Đơn giá tiêu chuẩn:';
+          }
+
+          results.push({
+            tierId: card.getAttribute('data-pricing-tier'),
+            isPromoActive: isActive,
+            originalRange: origText,
+            discountedRange: discText,
+            displayedPrimaryPrice: isActive ? discText : origText,
+          });
+        }
+
+        return {
+          isPromoActive: isActive,
+          expiresIso: expiresIso,
+          evaluatedNowIso: new Date(nowMs).toISOString(),
+          tiers: results,
+        };
+      }
+
+      // Expose helper for automated testing before/after expiry without changing OS system clock
+      window.fagonEvaluatePricingAt = applyPricingState;
+
+      // Support optional URL query param ?testTime=... for non-intrusive QA verification
+      var testParam = null;
+      try {
+        var params = new URLSearchParams(window.location.search);
+        testParam = params.get('testTime');
+      } catch (e) {}
+
+      applyPricingState(testParam || undefined);
+    })();
+  </script>
+</section>
+
+<style>
+  .pricing-lead {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .shop-pricing-block {
+    margin-bottom: 2.5rem;
+  }
+
+  /* By default (no JS or expired), promo elements are hidden and original price is primary */
+  .promo-callout {
+    display: none;
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+
+  #bang-gia[data-promo-state='active'] .promo-callout {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .promo-callout__badge {
+    background-color: var(--color-lime);
+    color: var(--color-ink);
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-pill);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .promo-callout__content {
+    flex: 1 1 320px;
+  }
+
+  .promo-callout__content strong {
+    display: block;
+    color: var(--color-lime);
+    font-size: 1.02rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .promo-callout__content p {
+    margin: 0;
+    font-size: 0.86rem;
+    color: #d5d8cf;
+  }
+
+  .pricing-tiers {
+    margin-bottom: 1.75rem;
+  }
+
+  .pricing-card--featured {
+    border-width: 2.5px;
+    background-color: #fdfcf8;
+  }
+
+  .pricing-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .pricing-card__duration {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .pricing-card__name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin: 0.15rem 0 0 0;
+  }
+
+  .pricing-card__price-box {
+    background-color: var(--color-cream);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    padding: 0.95rem 1.1rem;
+    margin-bottom: 1.15rem;
+  }
+
+  .pricing-card__original-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+
+  .pricing-card__price-label {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+
+  /* When JS is off or promo is expired: original price is large and bold */
+  .pricing-card__original-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-ink);
+  }
+
+  .pricing-card__promo-line {
+    display: none;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.4rem;
+  }
+
+  /* When promo is active: strike through original price and highlight discounted price */
+  #bang-gia[data-promo-state='active'] .pricing-card__original-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-decoration: line-through;
+  }
+
+  #bang-gia[data-promo-state='active'] .pricing-card__promo-line {
+    display: flex;
+  }
+
+  .pricing-card__discounted-value {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--color-ink);
+  }
+
+  .pricing-card__unit {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .pricing-card__input-req {
+    font-size: 0.88rem;
+    background-color: var(--color-cream-alt);
+    padding: 0.65rem 0.85rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+  }
+
+  .pricing-card__list {
+    margin: 0 0 1.35rem 0;
+    padding-left: 1.15rem;
+    font-size: 0.9rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .pricing-card__footer {
+    border-top: 1px dashed var(--color-border);
+    padding-top: 1rem;
+  }
+
+  .pricing-card__cta {
+    width: 100%;
+  }
+
+  .pricing-notes-card {
+    background-color: var(--color-cream-alt);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 1.35rem 1.5rem;
+  }
+
+  .pricing-notes-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .pricing-notes-list {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 820px) {
+    .pricing-notes-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 2rem;
+    }
+  }
+
+  .custom-quote-box {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: clamp(1.35rem, 3vw, 2.25rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  @media (min-width: 880px) {
+    .custom-quote-box {
+      grid-template-columns: 1.3fr 0.7fr;
+      align-items: center;
+    }
+  }
+
+  .custom-quote-box__title {
+    margin-top: 0.65rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .custom-quote-box__desc {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .custom-quote-box__factors {
+    font-size: 0.9rem;
+  }
+
+  .custom-quote-box__factors ul {
+    margin: 0.45rem 0 0 0;
+    padding-left: 1.2rem;
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .custom-quote-box__card {
+    background-color: var(--color-cream);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+  }
+
+  .custom-quote-box__card h4 {
+    margin: 0 0 0.6rem 0;
+    font-size: 1rem;
+  }
+
+  .custom-quote-box__card ul {
+    margin: 0 0 1.15rem 0;
+    padding-left: 1.1rem;
+    font-size: 0.86rem;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .custom-quote-box__btn {
+    width: 100%;
+  }
+</style>

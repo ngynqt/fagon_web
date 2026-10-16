@@ -1,0 +1,484 @@
+---
+import { audiences, type AudienceId } from '../data/audiences';
+import { siteConfig } from '../data/site';
+
+interface Props {
+  currentAudienceId?: AudienceId;
+  currentPath?: string;
+}
+
+const { currentAudienceId, currentPath = Astro.url.pathname } = Astro.props;
+const currentAudience = audiences.find((a) => a.id === currentAudienceId);
+const demoHref = currentAudienceId ? '#demo-section' : '/#san-pham-mau';
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="/" class="site-logo" aria-label="Fagon — Về trang chủ">
+      <span class="site-logo__mark" aria-hidden="true">
+        <img
+          src="/assets/fagon-mark.png"
+          alt="Fagon Studio Logo"
+          width="36"
+          height="37"
+          class="site-logo__mark-img"
+          loading="eager"
+          decoding="async"
+        />
+      </span>
+      <span class="site-logo__text">{siteConfig.brandName}</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Điều hướng chính">
+      <ul class="site-nav__list">
+        <li>
+          <a
+            href="/dich-vu"
+            class:list={['site-nav__link', { 'is-active': currentPath.startsWith('/dich-vu') }]}
+          >
+            Dịch vụ
+          </a>
+        </li>
+        <li>
+          <a href={demoHref} class="site-nav__link">Sản phẩm mẫu</a>
+        </li>
+        <li>
+          <a href="/#ve-fagon" class="site-nav__link">Về Fagon</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a href="#yeu-cau-tu-van" class="btn btn--primary site-header__cta">
+        Trao đổi dự án
+      </a>
+
+      <!-- Mobile menu using native <details> so navigation works even without JS -->
+      <details class="mobile-menu">
+        <summary class="mobile-menu__toggle" aria-label="Mở menu điều hướng">
+          <span class="mobile-menu__icon" aria-hidden="true"></span>
+          <span class="mobile-menu__label">Menu</span>
+        </summary>
+        <div class="mobile-menu__panel">
+          <nav aria-label="Menu di động">
+            <ul class="mobile-menu__links">
+              <li><a href="/">Trang chủ chọn nhu cầu</a></li>
+              <li><a href="/dich-vu">Tất cả dịch vụ</a></li>
+              <li><a href={demoHref}>Sản phẩm mẫu</a></li>
+              <li><a href="/#ve-fagon">Về Fagon</a></li>
+              <li><a href="/bao-mat">Bảo mật &amp; Tiếp nhận yêu cầu</a></li>
+            </ul>
+            <div class="mobile-menu__audiences">
+              <p class="mobile-menu__subtitle">Chọn theo nhóm nhu cầu:</p>
+              <div class="mobile-menu__pills">
+                {
+                  audiences.map((aud) => (
+                    <a
+                      href={`/${aud.slug}`}
+                      class:list={[
+                        'audience-pill',
+                        { 'audience-pill--active': aud.id === currentAudienceId },
+                      ]}
+                    >
+                      {aud.title}
+                    </a>
+                  ))
+                }
+              </div>
+            </div>
+            <a href="#yeu-cau-tu-van" class="btn btn--primary mobile-menu__cta">
+              Trao đổi dự án
+            </a>
+          </nav>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  {
+    currentAudience && (
+      <div class="subpage-switcher" role="region" aria-label="Thanh chuyển đổi nhóm nhu cầu">
+        <div class="container subpage-switcher__inner">
+          <div class="subpage-switcher__current">
+            <span class="subpage-switcher__badge">Đang xem nhóm:</span>
+            <strong>{currentAudience.title}</strong>
+          </div>
+          <nav class="subpage-switcher__nav" aria-label="Đổi nhóm nhu cầu nhanh">
+            <span class="subpage-switcher__label">Đổi nhu cầu:</span>
+            <div class="subpage-switcher__links">
+              {audiences.map((aud) => (
+                <a
+                  href={`/${aud.slug}`}
+                  class:list={[
+                    'subpage-switcher__link',
+                    { 'is-current': aud.id === currentAudienceId },
+                  ]}
+                  aria-current={aud.id === currentAudienceId ? 'page' : undefined}
+                >
+                  {aud.title}
+                </a>
+              ))}
+              <a href="/dich-vu" class="subpage-switcher__all">
+                Xem tất cả dịch vụ →
+              </a>
+            </div>
+          </nav>
+        </div>
+      </div>
+    )
+  }
+</header>
+
+<script>
+  // Close mobile menu when clicking an anchor link inside it
+  document.querySelectorAll('.mobile-menu a').forEach((link) => {
+    link.addEventListener('click', () => {
+      const details = link.closest('details');
+      if (details) details.removeAttribute('open');
+    });
+  });
+
+  // Allow Escape key to close open mobile menu
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('details.mobile-menu[open]').forEach((el) => {
+        el.removeAttribute('open');
+      });
+    }
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(246, 243, 235, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1.5px solid var(--color-ink);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 72px;
+    gap: 1rem;
+  }
+
+  .site-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    min-height: 44px;
+    padding-block: 0.25rem;
+    transition: opacity var(--transition-fast);
+  }
+
+  .site-logo:hover {
+    opacity: 0.92;
+  }
+
+  .site-logo__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background-color: rgba(25, 27, 24, 0.04);
+    border: 1px solid rgba(25, 27, 24, 0.08);
+    transition: transform var(--transition-bounce), background-color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .site-logo:hover .site-logo__mark {
+    transform: rotate(-3deg) scale(1.05);
+    background-color: rgba(197, 245, 60, 0.25);
+    border-color: rgba(197, 245, 60, 0.6);
+  }
+
+  .site-logo__mark-img {
+    width: 25px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .site-logo__text {
+    letter-spacing: -0.02em;
+  }
+
+  .site-nav {
+    display: none;
+  }
+
+  @media (min-width: 860px) {
+    .site-nav {
+      display: block;
+    }
+  }
+
+  .site-nav__list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-nav__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.4rem 0.95rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+    transition: background-color 0.15s ease;
+  }
+
+  .site-nav__link:hover,
+  .site-nav__link.is-active {
+    background-color: var(--color-cream-alt);
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .site-header__cta {
+    padding-inline: 1.1rem;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    .site-header__cta {
+      padding-inline: 0.85rem;
+      font-size: 0.85rem;
+    }
+  }
+
+  /* Mobile Menu */
+  .mobile-menu {
+    position: relative;
+  }
+
+  @media (min-width: 860px) {
+    .mobile-menu {
+      display: none;
+    }
+  }
+
+  .mobile-menu__toggle {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 46px;
+    padding: 0.5rem 0.85rem;
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface);
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .mobile-menu__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-menu__icon {
+    width: 16px;
+    height: 12px;
+    border-top: 2px solid var(--color-ink);
+    border-bottom: 2px solid var(--color-ink);
+    position: relative;
+  }
+
+  .mobile-menu__icon::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-ink);
+  }
+
+  .mobile-menu__panel {
+    position: fixed;
+    left: 0.75rem;
+    right: 0.75rem;
+    top: 76px;
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-elevated);
+    z-index: 200;
+    max-height: calc(100vh - 92px);
+    overflow-y: auto;
+  }
+
+  .mobile-menu__links {
+    list-style: none;
+    margin: 0 0 1rem 0;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .mobile-menu__links a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .mobile-menu__links a:hover {
+    background-color: var(--color-cream-alt);
+  }
+
+  .mobile-menu__audiences {
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .mobile-menu__subtitle {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .mobile-menu__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .audience-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    background: var(--color-cream);
+  }
+
+  .audience-pill--active {
+    background: var(--color-lime);
+    font-weight: 700;
+  }
+
+  .mobile-menu__cta {
+    width: 100%;
+  }
+
+  /* Subpage Audience Switcher Bar */
+  .subpage-switcher {
+    background-color: var(--color-ink);
+    color: var(--color-cream);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(246, 243, 235, 0.14);
+  }
+
+  .subpage-switcher__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem 1.25rem;
+    padding-block: 0.45rem;
+  }
+
+  .subpage-switcher__current {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .subpage-switcher__badge {
+    color: #c2c5bc;
+  }
+
+  .subpage-switcher__ current strong {
+    color: var(--color-lime);
+  }
+
+  .subpage-switcher__nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .subpage-switcher__label {
+    color: #c2c5bc;
+    margin-right: 0.25rem;
+  }
+
+  .subpage-switcher__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .subpage-switcher__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    color: var(--color-cream);
+    border: 1px solid rgba(246, 243, 235, 0.25);
+    font-weight: 500;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .subpage-switcher__link:hover {
+    border-color: var(--color-lime);
+    color: var(--color-lime);
+  }
+
+  .subpage-switcher__link.is-current {
+    background-color: var(--color-lime);
+    color: var(--color-ink);
+    border-color: var(--color-lime);
+    font-weight: 700;
+  }
+
+  .subpage-switcher__all {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0.25rem 0.65rem;
+    color: var(--color-lime);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+</style>

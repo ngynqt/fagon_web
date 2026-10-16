@@ -1,0 +1,516 @@
+---
+import { audiences } from '../data/audiences';
+---
+
+<div class="audience-selector" id="chon-nhu-cau">
+  <!-- Non-intrusive "Continue with [group]" banner powered by localStorage (never auto-redirects) -->
+  <div
+    id="last-audience-banner"
+    class="continue-banner"
+    role="region"
+    aria-label="Gợi ý tiếp tục nhóm nhu cầu gần nhất"
+    hidden
+  >
+    <div class="continue-banner__text">
+      <span class="badge badge--lime">Lần truy cập trước</span>
+      <span>Bạn từng xem nhóm <strong id="last-audience-name"></strong>.</span>
+    </div>
+    <div class="continue-banner__actions">
+      <a id="last-audience-link" href="/" class="btn btn--dark continue-banner__btn">
+        Tiếp tục với <span id="last-audience-btn-label"></span> →
+      </a>
+      <button
+        type="button"
+        id="clear-last-audience"
+        class="btn btn--outline continue-banner__clear"
+      >
+        Chọn nhóm khác bên dưới
+      </button>
+    </div>
+  </div>
+
+  <!-- 5 Real Audience Links with Visual Studio Previews (Section 5 & 6) -->
+  <div class="audience-grid" role="list" aria-label="Danh sách 5 nhóm nhu cầu">
+    {
+      audiences.map((aud) => (
+        <a
+          href={`/${aud.slug}`}
+          class="audience-card"
+          role="listitem"
+          data-audience-select={aud.id}
+          data-audience-title={aud.title}
+        >
+          <div class="audience-card__media">
+            <img
+              src={aud.sceneImage}
+              alt={`Minh họa nhóm ${aud.title}: ${aud.homeSummary}`}
+              width="484"
+              height="394"
+              loading="eager"
+              decoding="async"
+              class="audience-card__img"
+            />
+            <span class="audience-card__number" aria-hidden="true">
+              {aud.order}
+            </span>
+          </div>
+
+          <div class="audience-card__body">
+            <div class="audience-card__title-row">
+              <h2 class="audience-card__title">{aud.title}</h2>
+              <span class="audience-card__arrow" aria-hidden="true">
+                ↗
+              </span>
+            </div>
+            <p class="audience-card__summary">{aud.homeSummary}</p>
+          </div>
+
+          <div class="audience-card__footer">
+            <span class="audience-card__cta">Xem dịch vụ &amp; mẫu →</span>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+
+  <!-- Interactive Full-Banner Showcase on Homepage -->
+  <div class="banner-showcase" aria-label="Trình diễn trực quan 5 nhóm nhu cầu">
+    <div class="banner-showcase__header">
+      <div class="banner-showcase__label-group">
+        <span class="badge badge--lime">Góc nhìn trực quan</span>
+        <span class="banner-showcase__hint">Bấm chọn từng nhóm để xem trước không gian sản phẩm:</span>
+      </div>
+      <div class="banner-showcase__tabs" role="tablist" aria-label="Chọn banner nhóm nhu cầu">
+        {
+          audiences.map((aud, idx) => (
+            <button
+              type="button"
+              role="tab"
+              class:list={['banner-tab-btn', { 'is-active': idx === 0 }]}
+              aria-selected={idx === 0 ? 'true' : 'false'}
+              aria-controls={`home-banner-panel-${aud.id}`}
+              id={`home-banner-tab-${aud.id}`}
+              data-banner-tab={aud.id}
+            >
+              {aud.order}. {aud.title}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="banner-showcase__panels">
+      {
+        audiences.map((aud, idx) => (
+          <div
+            id={`home-banner-panel-${aud.id}`}
+            role="tabpanel"
+            aria-labelledby={`home-banner-tab-${aud.id}`}
+            class="banner-panel"
+            data-banner-panel={aud.id}
+            hidden={idx !== 0}
+          >
+            <a href={`/${aud.slug}`} class="banner-panel__link" data-banner-audience={aud.id}>
+              <img
+                src={aud.bannerImage}
+                alt={aud.bannerAlt}
+                width="1024"
+                height="394"
+                loading={idx === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                class="banner-panel__img"
+              />
+            </a>
+            <div class="banner-panel__bar">
+              <div class="banner-panel__info">
+                <strong>{aud.title}:</strong> {aud.hero.title} — <span>{aud.homeSummary}</span>
+              </div>
+              <a
+                href={`/${aud.slug}`}
+                class="btn btn--primary banner-panel__cta"
+                data-banner-audience={aud.id}
+              >
+                Vào trang {aud.title} →
+              </a>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="audience-selector__fallback">
+    <a href="/dich-vu" class="audience-fallback-link">
+      Chưa biết chọn? Xem tất cả dịch vụ →
+    </a>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'fagon_last_audience';
+  const AUDIENCE_MAP: Record<string, { title: string; href: string }> = {
+    'giao-vien': { title: 'Giáo viên', href: '/giao-vien' },
+    'nguoi-ban-hang': { title: 'Người bán hàng', href: '/nguoi-ban-hang' },
+    'van-phong': { title: 'Văn phòng', href: '/van-phong' },
+    'sinh-vien': { title: 'Sinh viên', href: '/sinh-vien' },
+    'sang-tao': { title: 'Sáng tạo & cá nhân', href: '/sang-tao' },
+  };
+
+  function safeGetLastAudience(): string | null {
+    try {
+      return window.localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  function safeSetLastAudience(id: string): void {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, id);
+    } catch {
+      // Storage blocked — website continues working normally
+    }
+  }
+
+  function safeClearLastAudience(): void {
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Ignore
+    }
+  }
+
+  const savedId = safeGetLastAudience();
+  const banner = document.getElementById('last-audience-banner');
+  const nameEl = document.getElementById('last-audience-name');
+  const btnLabelEl = document.getElementById('last-audience-btn-label');
+  const linkEl = document.getElementById('last-audience-link') as HTMLAnchorElement | null;
+  const clearBtn = document.getElementById('clear-last-audience');
+
+  if (savedId && AUDIENCE_MAP[savedId] && banner && nameEl && btnLabelEl && linkEl) {
+    const info = AUDIENCE_MAP[savedId];
+    nameEl.textContent = info.title;
+    btnLabelEl.textContent = info.title;
+    linkEl.href = info.href;
+    banner.hidden = false;
+  }
+
+  clearBtn?.addEventListener('click', () => {
+    safeClearLastAudience();
+    if (banner) banner.hidden = true;
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-audience-select], [data-banner-audience]').forEach((card) => {
+    card.addEventListener('click', () => {
+      const id = card.getAttribute('data-audience-select') || card.getAttribute('data-banner-audience');
+      if (id) safeSetLastAudience(id);
+    });
+  });
+
+  // Banner Showcase Tabs
+  const tabBtns = document.querySelectorAll<HTMLButtonElement>('[data-banner-tab]');
+  const tabPanels = document.querySelectorAll<HTMLElement>('[data-banner-panel]');
+
+  function activateBannerTab(targetId: string) {
+    tabBtns.forEach((btn) => {
+      const active = btn.getAttribute('data-banner-tab') === targetId;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    tabPanels.forEach((panel) => {
+      const active = panel.getAttribute('data-banner-panel') === targetId;
+      panel.hidden = !active;
+    });
+  }
+
+  tabBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-banner-tab');
+      if (id) activateBannerTab(id);
+    });
+  });
+
+  // If user had a saved audience, highlight that tab in the visual banner showcase (without redirecting!)
+  if (savedId && AUDIENCE_MAP[savedId]) {
+    activateBannerTab(savedId);
+  }
+</script>
+
+<style>
+  .audience-selector {
+    margin-top: 2rem;
+  }
+
+  .continue-banner {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .continue-banner__text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+  }
+
+  .continue-banner__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .continue-banner__btn,
+  .continue-banner__clear {
+    min-height: 44px;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.88rem;
+  }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+  }
+
+  @media (min-width: 640px) {
+    .audience-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .audience-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+
+  .audience-card {
+    background-color: var(--color-surface);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: 0.85rem;
+    text-decoration: none;
+    color: var(--color-ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 0 var(--color-ink);
+    transition: transform 0.16s ease, background-color 0.16s ease;
+  }
+
+  .audience-card:hover {
+    background-color: var(--color-lime);
+    transform: translateY(-2px);
+  }
+
+  .audience-card__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 484 / 394;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--color-ink);
+    background-color: var(--color-cream);
+    margin-bottom: 0.85rem;
+  }
+
+  .audience-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+
+  .audience-card:hover .audience-card__img {
+    transform: scale(1.03);
+  }
+
+  .audience-card__number {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    font-weight: 800;
+    padding: 0.18rem 0.5rem;
+    border-radius: 6px;
+    background-color: var(--color-ink);
+    color: var(--color-lime);
+    border: 1px solid var(--color-ink);
+  }
+
+  .audience-card__body {
+    padding-inline: 0.25rem;
+  }
+
+  .audience-card__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .audience-card__title {
+    font-family: var(--font-display);
+    font-size: 1.32rem;
+    margin: 0;
+    line-height: 1.25;
+  }
+
+  .audience-card__arrow {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .audience-card__summary {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.9rem 0;
+  }
+
+  .audience-card:hover .audience-card__summary {
+    color: var(--color-ink);
+  }
+
+  .audience-card__footer {
+    border-top: 1px dashed rgba(25, 27, 24, 0.25);
+    padding: 0.65rem 0.25rem 0.15rem 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  /* Full Banner Showcase on Homepage */
+  .banner-showcase {
+    margin-top: 2.25rem;
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-lg);
+    padding: clamp(1rem, 2.5vw, 1.5rem);
+    box-shadow: var(--shadow-card);
+  }
+
+  .banner-showcase__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .banner-showcase__label-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .banner-showcase__hint {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .banner-showcase__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .banner-tab-btn {
+    min-height: 40px;
+    padding: 0.4rem 0.85rem;
+    font-family: var(--font-sans);
+    font-size: 0.84rem;
+    font-weight: 700;
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .banner-tab-btn:hover {
+    background-color: var(--color-cream-alt);
+  }
+
+  .banner-tab-btn.is-active {
+    background-color: var(--color-lime);
+  }
+
+  .banner-panel__link {
+    display: block;
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--color-cream);
+    aspect-ratio: 1024 / 394;
+  }
+
+  .banner-panel__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .banner-panel__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+    margin-top: 0.9rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--color-border);
+  }
+
+  .banner-panel__info {
+    font-size: 0.92rem;
+  }
+
+  .banner-panel__info span {
+    color: var(--color-text-muted);
+  }
+
+  .banner-panel__cta {
+    min-height: 42px;
+    padding: 0.45rem 1.05rem;
+    font-size: 0.88rem;
+  }
+
+  .audience-selector__fallback {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .audience-fallback-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    font-size: 0.96rem;
+    background-color: var(--color-cream-alt);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+  }
+
+  .audience-fallback-link:hover {
+    background-color: var(--color-lime);
+  }
+</style>

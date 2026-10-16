@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" role="img" aria-label="Lookbook Bộ sưu tập Thu Đông — Minimalist Atelier">
+  <rect width="800" height="500" rx="16" fill="#F6F3EB" stroke="#191B18" stroke-width="2"/>
+  <rect x="28" y="28" width="340" height="32" rx="16" fill="#191B18"/>
+  <circle cx="48" cy="44" r="5" fill="#C5F53C"/>
+  <text x="64" y="49" font-family="sans-serif" font-size="11.5" font-weight="700" fill="#F6F3EB" letter-spacing="0.8">GIAO DIỆN MINH HỌA • WEBSITE LOOKBOOK</text>
+  <text x="28" y="108" font-family="Georgia, serif" font-size="28" font-weight="700" fill="#191B18">Lookbook Bộ sưu tập Thu Đông — Minimalist Atelier</text>
+  <text x="28" y="144" font-family="sans-serif" font-size="15" fill="#72756C">Giao diện web xem bộ sưu tập tối ưu cho điện thoại kèm thông số chất liệu &amp; bảng size</text>
+  <line x1="28" y1="172" x2="772" y2="172" stroke="#191B18" stroke-opacity="0.15" stroke-width="1.5"/>
+  <g transform="translate(28, 198)">
+    <rect x="0" y="0" width="232" height="210" rx="12" fill="#FFFFFF" stroke="#191B18" stroke-width="1.5"/>
+    <rect x="18" y="18" width="38" height="24" rx="6" fill="#C5F53C"/>
+    <text x="37" y="35" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#191B18">01</text>
+    <text x="18" y="74" font-family="sans-serif" font-size="14" font-weight="700" fill="#191B18">Trình bày ảnh Lookbook cỡ lớn</text>
+    <rect x="18" y="102" width="196" height="10" rx="5" fill="#EAE6DC"/>
+    <rect x="18" y="122" width="150" height="10" rx="5" fill="#EAE6DC"/>
+    <rect x="18" y="152" width="196" height="36" rx="6" fill="#F6F3EB" stroke="#191B18" stroke-opacity="0.2"/>
+
+    <rect x="256" y="0" width="232" height="210" rx="12" fill="#FFFFFF" stroke="#191B18" stroke-width="1.5"/>
+    <rect x="274" y="18" width="38" height="24" rx="6" fill="#C5F53C"/>
+    <text x="293" y="35" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#191B18">02</text>
+    <text x="274" y="74" font-family="sans-serif" font-size="14" font-weight="700" fill="#191B18">Thông tin chất vải &amp; cách chọn size</text>
+    <rect x="274" y="102" width="196" height="10" rx="5" fill="#EAE6DC"/>
+    <rect x="274" y="122" width="165" height="10" rx="5" fill="#EAE6DC"/>
+    <rect x="274" y="152" width="196" height="36" rx="6" fill="#F6F3EB" stroke="#191B18" stroke-opacity="0.2"/>
+
+    <rect x="512" y="0" width="232" height="210" rx="12" fill="#191B18"/>
+    <rect x="530" y="18" width="38" height="24" rx="6" fill="#C5F53C"/>
+    <text x="549" y="35" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="700" fill="#191B18">03</text>
+    <text x="530" y="74" font-family="sans-serif" font-size="14" font-weight="700" fill="#F6F3EB">Nút gửi yêu cầu tư vấn nhanh</text>
+    <rect x="530" y="102" width="196" height="10" rx="5" fill="#72756C" fill-opacity="0.4"/>
+    <rect x="530" y="122" width="140" height="10" rx="5" fill="#72756C" fill-opacity="0.4"/>
+    <rect x="530" y="152" width="196" height="36" rx="6" fill="#C5F53C" fill-opacity="0.15" stroke="#C5F53C" stroke-opacity="0.5"/>
+  </g>
+  <text x="28" y="458" font-family="sans-serif" font-size="12.5" fill="#72756C">Fagon Studio — Đồ họa bố cục minh họa cấu trúc thành phẩm (không giả định dự án khách hàng thật)</text>
+</svg>

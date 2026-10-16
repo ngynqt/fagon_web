@@ -1,0 +1,120 @@
+---
+import type { AudienceFaqItem } from '../data/audiences';
+
+interface Props {
+  faqs: AudienceFaqItem[];
+  audienceTitle: string;
+}
+
+const { faqs, audienceTitle } = Astro.props;
+---
+
+<section class="section" id="faq-nhom" aria-labelledby="faq-heading">
+  <div class="container">
+    <div class="section-header section-header--split">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>CÂU HỎI THƯỜNG GẶP • {audienceTitle.toUpperCase()}</span>
+        </div>
+        <h2 id="faq-heading">Giải đáp trước khi bạn gửi yêu cầu</h2>
+      </div>
+      <p class="faq-lead">
+        Nếu bạn có câu hỏi riêng về tài liệu hoặc tiến độ, hãy ghi trực tiếp vào biểu mẫu bên dưới để Fagon phản hồi chi tiết.
+      </p>
+    </div>
+
+    <div class="faq-list" role="region" aria-label={`Câu hỏi thường gặp cho ${audienceTitle}`}>
+      {
+        faqs.map((item, idx) => (
+          <details class="faq-item" open={idx === 0}>
+            <summary class="faq-item__summary">
+              <span class="faq-item__q">{item.question}</span>
+              <span class="faq-item__icon" aria-hidden="true">+</span>
+            </summary>
+            <div class="faq-item__answer">
+              <p>{item.answer}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-lead {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 920px;
+  }
+
+  .faq-item {
+    background-color: var(--color-surface);
+    border: 1.5px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  .faq-item__summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 56px;
+    padding: 1rem 1.35rem;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.02rem;
+    background-color: var(--color-surface);
+    transition: background-color 0.15s ease;
+  }
+
+  .faq-item__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item__summary:hover {
+    background-color: var(--color-cream);
+  }
+
+  .faq-item[open] .faq-item__summary {
+    background-color: var(--color-cream-alt);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .faq-item__icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-ink);
+    background-color: var(--color-lime);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+  }
+
+  .faq-item[open] .faq-item__icon {
+    transform: rotate(45deg);
+  }
+
+  .faq-item__answer {
+    padding: 1.15rem 1.35rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .faq-item__answer p {
+    margin: 0;
+  }
+</style>

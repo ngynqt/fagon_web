@@ -1,0 +1,160 @@
+---
+import type { ProcessStep } from '../data/site';
+import { siteConfig } from '../data/site';
+
+interface Props {
+  steps?: ProcessStep[];
+  audienceTitle?: string;
+  sectionId?: string;
+}
+
+const {
+  steps = siteConfig.generalProcess,
+  audienceTitle,
+  sectionId = 'quy-trinh-nhom',
+} = Astro.props;
+---
+
+<section class="section section--alt" id={sectionId}>
+  <div class="container">
+    <div class="section-header section-header--split">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow__dot" aria-hidden="true"></span>
+          <span>QUY TRÌNH LÀM VIỆC 3 BƯỚC</span>
+        </div>
+        <h2>
+          {
+            audienceTitle
+              ? `Quy trình phối hợp rõ ràng dành cho ${audienceTitle}`
+              : 'Ba bước từ ý tưởng đến sản phẩm hoàn chỉnh'
+          }
+        </h2>
+      </div>
+      <p class="process-sub">
+        Mọi dự án đều được thống nhất phạm vi trước khi bắt đầu và kiểm tra mẫu trung gian trước khi bàn giao cuối cùng.
+      </p>
+    </div>
+
+    <div class="grid-3 process-steps">
+      {
+        steps.map((step) => (
+          <article class="card process-step-card">
+            <div>
+              <span class="process-step-card__num">Bước {step.stepNumber}</span>
+              <h3 class="process-step-card__title">{step.title}</h3>
+              <p class="process-step-card__desc">{step.description}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="pre-agreement-box">
+      <div class="pre-agreement-box__header">
+        <span class="badge badge--lime">Minh bạch thỏa thuận</span>
+        <h3>6 hạng mục luôn chốt rõ trước khi triển khai</h3>
+      </div>
+      <div class="pre-agreement-grid">
+        {
+          siteConfig.preAgreementChecklist.map((item) => (
+            <div class="pre-agreement-item">
+              <strong>{item.label}</strong>
+              <p>{item.detail}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .process-sub {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .process-steps {
+    margin-bottom: 2rem;
+  }
+
+  .process-step-card__num {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    background-color: var(--color-lime);
+    border: 1px solid var(--color-ink);
+    margin-bottom: 0.85rem;
+  }
+
+  .process-step-card__title {
+    margin-bottom: 0.5rem;
+  }
+
+  .process-step-card__desc {
+    color: var(--color-text-muted);
+    font-size: 0.94rem;
+    margin: 0;
+  }
+
+  .pre-agreement-box {
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .pre-agreement-box__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .pre-agreement-box__header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+
+  .pre-agreement-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 680px) {
+    .pre-agreement-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .pre-agreement-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .pre-agreement-item {
+    background-color: var(--color-cream);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+  }
+
+  .pre-agreement-item strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .pre-agreement-item p {
+    margin: 0;
+    font-size: 0.86rem;
+    color: var(--color-text-muted);
+  }
+</style>
