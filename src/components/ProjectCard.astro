@@ -4,16 +4,18 @@ import type { PortfolioItem } from '../data/portfolio';
 interface Props {
   item: PortfolioItem;
   priorityLoad?: boolean;
+  demoInModal?: boolean;
+  uniformMeta?: boolean;
 }
 
-const { item, priorityLoad = false } = Astro.props;
+const { item, priorityLoad = false, demoInModal = false, uniformMeta = false } = Astro.props;
 const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
 ---
 
 <article class="card project-card" data-demo-code={item.code}>
   <div class="project-card__main">
     <!-- Top Meta Bar: Code + Strict Demo Label (Section 9) -->
-    <div class="project-card__meta">
+    <div class:list={['project-card__meta', { 'project-card__meta--uniform': uniformMeta }]}>
       <span class="project-card__code">Mã: {item.code}</span>
       <span
         class:list={[
@@ -34,7 +36,6 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
               <video
                 src={item.videoPath}
                 poster={item.posterPath || item.resourcePath}
-                controls
                 preload="metadata"
                 playsinline
                 class="project-card__video"
@@ -42,6 +43,13 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
               >
                 Trình duyệt của bạn không hỗ trợ thẻ video HTML5.
               </video>
+              <button type="button" class="video-play-overlay" data-video-play aria-label="Phát video">▶</button>
+              <div class="video-controls" data-video-controls>
+                <button type="button" class="video-control-btn" data-video-toggle aria-label="Phát video">▶</button>
+                <span class="video-time" data-video-time>0:00 / 0:00</span>
+                <input class="video-progress" type="range" min="0" max="100" value="0" step="0.1" data-video-progress aria-label="Tiến trình video" />
+                <button type="button" class="video-control-btn" data-video-mute aria-label="Bật hoặc tắt âm thanh">🔊</button>
+              </div>
             </div>
             {item.resourcePath && (
               <div class="project-card__media-view project-card__media-view--image" data-view="image" hidden>
@@ -105,9 +113,6 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
         {item.visualData.metricsOrPoints.map((pt) => <li>{pt}</li>)}
       </ul>
 
-      <div class="project-card__status">
-        <strong>Trạng thái tài nguyên:</strong> {item.status}
-      </div>
     </div>
   </div>
 
@@ -116,9 +121,15 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
       {
         /* Rule 9: Only show experience button when an actual interactive feature exists */
         item.liveExperienceAnchor && (
-          <a href={item.liveExperienceAnchor} class="btn btn--primary project-card__btn">
-            {item.videoPath ? 'Xem video ngay ▶' : 'Trải nghiệm demo thật →'}
-          </a>
+          demoInModal ? (
+            <button type="button" class="btn btn--primary project-card__btn" data-service-demo={item.serviceId}>
+              Trải nghiệm demo →
+            </button>
+          ) : (
+            <a href={item.liveExperienceAnchor} class="btn btn--primary project-card__btn">
+              {item.videoPath ? 'Xem video ngay ▶' : 'Trải nghiệm demo thật →'}
+            </a>
+          )
         )
       }
       <a
@@ -131,17 +142,6 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
       </a>
     </div>
 
-    <details class="project-card__prompt">
-      <summary>Prompt tạo tài nguyên bổ sung (dành cho chủ dự án)</summary>
-      <div class="project-card__prompt-body">
-        <p><strong>Tài nguyên chờ bổ sung:</strong> {item.assetGenerationPrompt.missingAssetDescription}</p>
-        <p>
-          <strong>Công cụ gợi ý:</strong> {item.assetGenerationPrompt.recommendedTool} •
-          <strong>Tỷ lệ:</strong> {item.assetGenerationPrompt.aspectRatio}
-        </p>
-        <pre class="project-card__prompt-code"><code>{item.assetGenerationPrompt.promptText}</code></pre>
-      </div>
-    </details>
   </div>
 </article>
 
@@ -156,6 +156,10 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
     justify-content: space-between;
     gap: 0.5rem;
     margin-bottom: 0.85rem;
+  }
+
+  .project-card__meta--uniform {
+    min-height: 2.2rem;
   }
 
   .project-card__code {
@@ -243,15 +247,6 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
     gap: 0.3rem;
   }
 
-  .project-card__status {
-    background-color: var(--color-cream);
-    border: 1px solid var(--color-border);
-    padding: 0.55rem 0.75rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.82rem;
-    color: var(--color-text-muted);
-  }
-
   .project-card__actions {
     border-top: 1px dashed var(--color-border);
     padding-top: 1rem;
@@ -271,51 +266,15 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
     padding: 0.55rem 0.95rem;
   }
 
-  .project-card__prompt {
-    font-size: 0.8rem;
-    background-color: var(--color-cream);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    padding: 0.5rem 0.75rem;
-  }
-
-  .project-card__prompt summary {
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    min-height: 28px;
-    display: flex;
-    align-items: center;
-  }
-
-  .project-card__prompt-body {
-    margin-top: 0.6rem;
-    padding-top: 0.6rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .project-card__prompt-body p {
-    margin: 0 0 0.4rem 0;
-    font-size: 0.78rem;
-  }
-
-  .project-card__prompt-code {
-    margin: 0;
-    padding: 0.55rem;
-    background-color: var(--color-ink);
-    color: var(--color-cream);
-    border-radius: 6px;
-    font-size: 0.75rem;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
   .project-card__media-toggle-container {
     width: 100%;
     height: 100%;
     position: relative;
     display: flex;
     flex-direction: column;
+    background:
+      radial-gradient(circle at 18% 10%, rgba(197, 245, 60, 0.22), transparent 34%),
+      #10120f;
   }
 
   .project-card__media-view {
@@ -325,7 +284,8 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #000;
+    background-color: #10120f;
+    padding: 0.45rem;
   }
 
   .project-card__media-view[hidden] {
@@ -336,22 +296,80 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background-color: #000;
+    background-color: #10120f;
     display: block;
+    border-radius: calc(var(--radius-sm) - 3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
   }
+
+  .video-play-overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 3.75rem;
+    height: 3.75rem;
+    border: 1.5px solid var(--color-ink);
+    border-radius: 50%;
+    background: var(--color-lime);
+    color: var(--color-ink);
+    font-size: 1.25rem;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--color-ink);
+    z-index: 3;
+  }
+
+  .video-play-overlay[hidden] { display: none; }
+
+  .video-controls {
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.85rem;
+    display: grid;
+    grid-template-columns: auto auto minmax(80px, 1fr) auto;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-pill);
+    background: rgba(15, 18, 14, 0.84);
+    backdrop-filter: blur(12px);
+    color: #fff;
+    z-index: 3;
+    transition: opacity var(--transition-fast);
+  }
+
+  .video-control-btn {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-lime);
+    color: var(--color-ink);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .video-time { white-space: nowrap; font-size: 0.72rem; font-variant-numeric: tabular-nums; }
+  .video-progress { width: 100%; accent-color: var(--color-lime); cursor: pointer; }
 
   .project-card__media-switcher {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: 0.85rem;
+    right: 0.85rem;
     display: flex;
     gap: 0.35rem;
-    background-color: rgba(25, 27, 24, 0.88);
-    backdrop-filter: blur(8px);
-    padding: 0.25rem;
-    border-radius: var(--radius-sm);
+    background-color: rgba(15, 18, 14, 0.82);
+    backdrop-filter: blur(12px);
+    padding: 0.3rem;
+    border-radius: var(--radius-pill);
     z-index: 5;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
   }
 
   .media-switch-btn {
@@ -361,8 +379,8 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
     color: #d0d3ca;
     font-size: 0.74rem;
     font-weight: 700;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
+    padding: 0.38rem 0.7rem;
+    border-radius: var(--radius-pill);
     cursor: pointer;
     transition: background-color var(--transition-fast), color var(--transition-fast);
   }
@@ -374,6 +392,11 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
   .media-switch-btn.is-active {
     background-color: var(--color-lime);
     color: var(--color-ink);
+  }
+
+  .media-switch-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
   }
 </style>
 
@@ -401,6 +424,36 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
           }
         });
       });
+
+      const video = container.querySelector<HTMLVideoElement>('video');
+      const toggle = container.querySelector<HTMLButtonElement>('[data-video-toggle]');
+      const overlay = container.querySelector<HTMLButtonElement>('[data-video-play]');
+      const mute = container.querySelector<HTMLButtonElement>('[data-video-mute]');
+      const progress = container.querySelector<HTMLInputElement>('[data-video-progress]');
+      const time = container.querySelector<HTMLElement>('[data-video-time]');
+      const formatTime = (seconds: number) => {
+        const safe = Number.isFinite(seconds) ? Math.floor(seconds) : 0;
+        return `${Math.floor(safe / 60)}:${String(safe % 60).padStart(2, '0')}`;
+      };
+      const sync = () => {
+        if (!video) return;
+        const isPlaying = !video.paused && !video.ended;
+        if (toggle) { toggle.textContent = isPlaying ? 'Ⅱ' : '▶'; toggle.setAttribute('aria-label', isPlaying ? 'Tạm dừng video' : 'Phát video'); }
+        if (overlay) overlay.hidden = isPlaying;
+        if (progress && video.duration) progress.value = String((video.currentTime / video.duration) * 100);
+        if (time) time.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+        if (mute) mute.textContent = video.muted || video.volume === 0 ? '🔇' : '🔊';
+      };
+      const togglePlayback = () => { if (!video) return; video.paused ? video.play() : video.pause(); };
+      toggle?.addEventListener('click', togglePlayback);
+      overlay?.addEventListener('click', togglePlayback);
+      mute?.addEventListener('click', () => { if (video) { video.muted = !video.muted; sync(); } });
+      progress?.addEventListener('input', () => { if (video?.duration && progress) { video.currentTime = (Number(progress.value) / 100) * video.duration; } });
+      video?.addEventListener('loadedmetadata', sync);
+      video?.addEventListener('timeupdate', sync);
+      video?.addEventListener('play', sync);
+      video?.addEventListener('pause', sync);
+      video?.addEventListener('ended', sync);
     });
   }
 

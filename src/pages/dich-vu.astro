@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
+import ServiceDemoExplorer from '../components/ServiceDemoExplorer.astro';
 import { audiences } from '../data/audiences';
-import { getPortfolioByIds } from '../data/portfolio';
+import { getPortfolioByIds, portfolioItems } from '../data/portfolio';
 import { allServices, getServicesByCategory, outputCategories } from '../data/services';
 ---
 
@@ -121,14 +122,11 @@ import { allServices, getServicesByCategory, outputCategories } from '../data/se
                         <span class="demos-label">Demo phù hợp:</span>
                         <div class="demos-chips">
                           {relatedDemos.map((dm) => {
-                            const targetHref =
-                              dm.liveExperienceAnchor ||
-                              `/${dm.audienceIds[0] || 'nguoi-ban-hang'}#demo-section`;
                             return (
-                              <a href={targetHref} class="demo-chip">
+                              <button type="button" class="demo-chip" data-service-demo={dm.serviceId}>
                                 <span class="demo-chip__tag">{dm.demoLabel}</span>
                                 <span>{dm.title}</span>
-                              </a>
+                              </button>
                             );
                           })}
                         </div>
@@ -155,6 +153,8 @@ import { allServices, getServicesByCategory, outputCategories } from '../data/se
       );
     })
   }
+
+  <ServiceDemoExplorer demoItems={portfolioItems} />
 
   <!-- Consultation Form (Default audience: "Khác / Chưa xác định", pre-selected service when clicked) -->
   <ContactForm defaultAudienceId="khac" />
@@ -353,6 +353,10 @@ import { allServices, getServicesByCategory, outputCategories } from '../data/se
     font-size: 0.84rem;
     font-weight: 600;
     text-decoration: none;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    text-align: left;
+    cursor: pointer;
   }
 
   .demo-chip:hover {

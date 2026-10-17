@@ -29,6 +29,10 @@ import { audiences } from '../data/audiences';
     </div>
   </div>
 
+  <p class="audience-selector__hint">
+    Chọn nhóm phù hợp để xem trọn bộ dịch vụ và demo theo nhu cầu của bạn, hoặc kéo xuống để khám phá các demo tiêu biểu.
+  </p>
+
   <!-- 5 Real Audience Links with Visual Studio Previews (Section 5 & 6) -->
   <div class="audience-grid" role="list" aria-label="Danh sách 5 nhóm nhu cầu">
     {
@@ -71,72 +75,6 @@ import { audiences } from '../data/audiences';
         </a>
       ))
     }
-  </div>
-
-  <!-- Interactive Full-Banner Showcase on Homepage -->
-  <div class="banner-showcase" aria-label="Trình diễn trực quan 5 nhóm nhu cầu">
-    <div class="banner-showcase__header">
-      <div class="banner-showcase__label-group">
-        <span class="badge badge--lime">Góc nhìn trực quan</span>
-        <span class="banner-showcase__hint">Bấm chọn từng nhóm để xem trước không gian sản phẩm:</span>
-      </div>
-      <div class="banner-showcase__tabs" role="tablist" aria-label="Chọn banner nhóm nhu cầu">
-        {
-          audiences.map((aud, idx) => (
-            <button
-              type="button"
-              role="tab"
-              class:list={['banner-tab-btn', { 'is-active': idx === 0 }]}
-              aria-selected={idx === 0 ? 'true' : 'false'}
-              aria-controls={`home-banner-panel-${aud.id}`}
-              id={`home-banner-tab-${aud.id}`}
-              data-banner-tab={aud.id}
-            >
-              {aud.order}. {aud.title}
-            </button>
-          ))
-        }
-      </div>
-    </div>
-
-    <div class="banner-showcase__panels">
-      {
-        audiences.map((aud, idx) => (
-          <div
-            id={`home-banner-panel-${aud.id}`}
-            role="tabpanel"
-            aria-labelledby={`home-banner-tab-${aud.id}`}
-            class="banner-panel"
-            data-banner-panel={aud.id}
-            hidden={idx !== 0}
-          >
-            <a href={`/${aud.slug}`} class="banner-panel__link" data-banner-audience={aud.id}>
-              <img
-                src={aud.bannerImage}
-                alt={aud.bannerAlt}
-                width="1024"
-                height="394"
-                loading={idx === 0 ? 'eager' : 'lazy'}
-                decoding="async"
-                class="banner-panel__img"
-              />
-            </a>
-            <div class="banner-panel__bar">
-              <div class="banner-panel__info">
-                <strong>{aud.title}:</strong> {aud.hero.title} — <span>{aud.homeSummary}</span>
-              </div>
-              <a
-                href={`/${aud.slug}`}
-                class="btn btn--primary banner-panel__cta"
-                data-banner-audience={aud.id}
-              >
-                Vào trang {aud.title} →
-              </a>
-            </div>
-          </div>
-        ))
-      }
-    </div>
   </div>
 
   <div class="audience-selector__fallback">
@@ -200,40 +138,12 @@ import { audiences } from '../data/audiences';
     if (banner) banner.hidden = true;
   });
 
-  document.querySelectorAll<HTMLAnchorElement>('[data-audience-select], [data-banner-audience]').forEach((card) => {
+  document.querySelectorAll<HTMLAnchorElement>('[data-audience-select]').forEach((card) => {
     card.addEventListener('click', () => {
-      const id = card.getAttribute('data-audience-select') || card.getAttribute('data-banner-audience');
+      const id = card.getAttribute('data-audience-select');
       if (id) safeSetLastAudience(id);
     });
   });
-
-  // Banner Showcase Tabs
-  const tabBtns = document.querySelectorAll<HTMLButtonElement>('[data-banner-tab]');
-  const tabPanels = document.querySelectorAll<HTMLElement>('[data-banner-panel]');
-
-  function activateBannerTab(targetId: string) {
-    tabBtns.forEach((btn) => {
-      const active = btn.getAttribute('data-banner-tab') === targetId;
-      btn.classList.toggle('is-active', active);
-      btn.setAttribute('aria-selected', active ? 'true' : 'false');
-    });
-    tabPanels.forEach((panel) => {
-      const active = panel.getAttribute('data-banner-panel') === targetId;
-      panel.hidden = !active;
-    });
-  }
-
-  tabBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-banner-tab');
-      if (id) activateBannerTab(id);
-    });
-  });
-
-  // If user had a saved audience, highlight that tab in the visual banner showcase (without redirecting!)
-  if (savedId && AUDIENCE_MAP[savedId]) {
-    activateBannerTab(savedId);
-  }
 </script>
 
 <style>
@@ -274,6 +184,13 @@ import { audiences } from '../data/audiences';
     min-height: 44px;
     padding: 0.45rem 0.95rem;
     font-size: 0.88rem;
+  }
+
+  .audience-selector__hint {
+    margin: 0 0 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.94rem;
+    font-weight: 600;
   }
 
   .audience-grid {

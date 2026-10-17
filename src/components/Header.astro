@@ -9,7 +9,7 @@ interface Props {
 
 const { currentAudienceId, currentPath = Astro.url.pathname } = Astro.props;
 const currentAudience = audiences.find((a) => a.id === currentAudienceId);
-const demoHref = currentAudienceId ? '#demo-section' : '/#san-pham-mau';
+const demoHref = currentAudienceId ? '#dich-vu-nhom' : '/#san-pham-mau';
 ---
 
 <header class="site-header">

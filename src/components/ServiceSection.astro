@@ -1,11 +1,14 @@
 ---
 import type { AudienceConfig } from '../data/audiences';
+import type { PortfolioItem } from '../data/portfolio';
+import ServiceDemoExplorer from './ServiceDemoExplorer.astro';
 
 interface Props {
   audience: AudienceConfig;
+  demoItems: PortfolioItem[];
 }
 
-const { audience } = Astro.props;
+const { audience, demoItems } = Astro.props;
 ---
 
 <section class="section" id="dich-vu-nhom">
@@ -23,6 +26,8 @@ const { audience } = Astro.props;
       </p>
     </div>
 
+    <ServiceDemoExplorer demoItems={demoItems} />
+
     <div class="grid-3">
       {
         audience.services.map((srv, idx) => (
@@ -36,6 +41,9 @@ const { audience } = Astro.props;
               <p class="service-card__desc">{srv.description}</p>
             </div>
             <div class="service-card__footer">
+              <button type="button" class="btn btn--dark service-card__demo-btn" data-service-demo={srv.linkedServiceId}>
+                Trải nghiệm demo →
+              </button>
               <a
                 href={`#yeu-cau-tu-van`}
                 class="btn btn--outline service-card__btn"
@@ -87,6 +95,8 @@ const { audience } = Astro.props;
   .service-card__footer {
     padding-top: 0.85rem;
     border-top: 1px dashed var(--color-border);
+    display: grid;
+    gap: 0.6rem;
   }
 
   .service-card__btn {
@@ -97,4 +107,6 @@ const { audience } = Astro.props;
   .service-card__btn:hover {
     background-color: var(--color-lime);
   }
+
+  .service-card__demo-btn { width: 100%; font-size: 0.88rem; }
 </style>

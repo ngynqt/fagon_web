@@ -28,7 +28,6 @@ export interface SiteConfig {
   contact: ContactConfig;
   founderStory: {
     authorLabel: string;
-    statusNote: string;
     paragraphs: string[];
   };
   generalProcess: ProcessStep[];
@@ -61,7 +60,6 @@ export const siteConfig: SiteConfig = {
   },
   founderStory: {
     authorLabel: 'Người sáng lập Fagon',
-    statusNote: 'Bản nháp câu chuyện thương hiệu (chờ chủ dự án duyệt)',
     paragraphs: [
       'Tôi xây dựng Fagon với mong muốn giúp những ý tưởng tốt có một cách thể hiện xứng đáng.',
       'Đó có thể là bài học cần sinh động hơn, sản phẩm cần được giới thiệu rõ hơn, hay một câu chuyện đang chờ được kể bằng hình ảnh.',

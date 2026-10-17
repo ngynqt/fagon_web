@@ -36,18 +36,6 @@ const { hero } = audience;
         <h1 class="audience-hero__title">{hero.title}</h1>
         <p class="audience-hero__desc">{hero.description}</p>
 
-        <div class="audience-hero__actions">
-          <a href="#yeu-cau-tu-van" class="btn btn--primary">
-            {hero.primaryCtaLabel}
-          </a>
-          <a href={hero.secondaryCtaAnchor} class="btn btn--outline">
-            {hero.secondaryCtaLabel}
-          </a>
-          <a href="/dich-vu" class="btn btn--outline">
-            Xem tất cả dịch vụ
-          </a>
-        </div>
-
         <div class="audience-hero__note" role="note">
           <strong>Cam kết thực hiện:</strong> {hero.highlightNote}
         </div>
@@ -64,7 +52,7 @@ const { hero } = audience;
           </p>
           <ol class="hero-summary-box__steps">
             <li><a href="#dich-vu-nhom">Dịch vụ phù hợp ({audience.services.length} hạng mục)</a></li>
-            <li><a href="#demo-section">Sản phẩm mẫu &amp; Demo minh họa</a></li>
+            <li><a href="#dich-vu-nhom">Dịch vụ &amp; sản phẩm mẫu</a></li>
             <li><a href="#quy-trinh-nhom">Quy trình 3 bước &amp; Cam kết chốt trước</a></li>
             <li><a href="#bang-gia">Cách tính giá &amp; Ưu đãi hiện hành</a></li>
             <li><a href="#faq-nhom">Câu hỏi thường gặp</a></li>
@@ -137,13 +125,6 @@ const { hero } = audience;
     color: var(--color-text-muted);
     max-width: 56ch;
     margin-bottom: 1.65rem;
-  }
-
-  .audience-hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
   }
 
   .audience-hero__note {
