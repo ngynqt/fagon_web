@@ -181,7 +181,7 @@ export const portfolioItems: PortfolioItem[] = [
   {
     code: 'FG-SHOP-02',
     id: 'demo-shop-cosmetics-cgi',
-    title: 'Bối cảnh sản phẩm & CGI: Tinh chất dưỡng da & Túi da thủ công',
+    title: 'Bối cảnh sản phẩm & CGI: Tinh chất dưỡng da',
     description:
       'Bố cục đặt sản phẩm tách nền vào không gian bệ đá tự nhiên, ánh sáng xiên và bóng đổ mềm cho banner bộ sưu tập và ảnh bìa gian hàng.',
     audienceIds: ['nguoi-ban-hang'],
@@ -190,12 +190,12 @@ export const portfolioItems: PortfolioItem[] = [
     mediaType: 'graphic-preview',
     resourcePath: '/assets/demos/shop-product-cgi.webp',
     demoLabel: 'Demo minh họa',
-    status: 'Ảnh và CGI sản phẩm mỹ phẩm / phụ kiện trên bệ đá travertine',
+    status: 'Ảnh CGI sản phẩm tinh chất dưỡng da trên bệ đá travertine',
     featuredOnHome: false,
     visualData: {
       eyebrow: 'PRODUCT STAGING • CGI CONCEPT',
-      headline: 'Phối cảnh ánh sáng Studio cho Mỹ phẩm & Phụ kiện',
-      subheadline: 'Tập trung làm nổi bật chất liệu vỏ chai, bề mặt da và bố cục khoảng trống đặt tiêu đề khuyến mãi.',
+      headline: 'Phối cảnh ánh sáng Studio cho Tinh chất dưỡng da',
+      subheadline: 'Tập trung làm nổi bật chất liệu vỏ chai, chất serum và bố cục khoảng trống đặt tiêu đề khuyến mãi.',
       metricsOrPoints: [
         'Tách nền sạch từ ảnh chụp điện thoại đủ sáng',
         'Tạo bóng đổ tiếp xúc (contact shadow) và phản xạ ánh sáng tự nhiên',
@@ -204,7 +204,7 @@ export const portfolioItems: PortfolioItem[] = [
       accentTag: 'Bố cục Sản phẩm',
     },
     assetGenerationPrompt: {
-      missingAssetDescription: 'Ảnh CGI thực tế chai serum thủy tinh mờ và túi xách da đặt trên bệ đá travertine',
+      missingAssetDescription: 'Ảnh CGI thực tế chai serum thủy tinh mờ đặt trên bệ đá travertine',
       recommendedTool: 'Blender 3D / Adobe Substance / Flux.1 Product Staging',
       aspectRatio: '4:5',
       promptText:
