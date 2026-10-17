@@ -21,6 +21,7 @@ export interface PortfolioItem {
   resourcePath: string;
   videoPath?: string;
   posterPath?: string;
+  showMediaSwitcher?: boolean;
   demoLabel: DemoLabelType;
   status: string;
   liveExperienceAnchor?: string; // Only present when an actual interactive feature exists on the page
@@ -121,6 +122,7 @@ export const portfolioItems: PortfolioItem[] = [
     resourcePath: '/assets/demos/edu-storyboard.webp',
     videoPath: '/assets/videos/edu-storyboard-video.mp4',
     posterPath: '/assets/videos/edu-storyboard-poster.webp',
+    showMediaSwitcher: false,
     demoLabel: 'Demo minh họa',
     status: 'Video hoạt hình Full HD (60s) có âm thanh & bảng phân cảnh trực quan',
     liveExperienceAnchor: '#demo-teacher-storyboard',
@@ -142,6 +144,39 @@ export const portfolioItems: PortfolioItem[] = [
       aspectRatio: '16:9',
       promptText:
         '2D warm storybook animation frame, four Vietnamese middle school students in neat white and navy uniforms sitting around a classroom wooden table discussing a poster project, warm natural window lighting, expressive friendly faces, Ghibli-inspired clean line art --ar 16:9',
+    },
+  },
+  {
+    code: 'FG-EDU-04',
+    id: 'demo-teacher-learning-storyboard',
+    title: 'Storyboard tình huống học tập: Việc nhỏ, trường xanh',
+    description:
+      'Bảng phân cảnh 4 khung hình minh họa mạch kể chuyện từ một chai nhựa bị bỏ quên đến hành động phân loại rác và thông điệp giữ gìn trường học xanh.',
+    audienceIds: ['giao-vien'],
+    serviceId: 'y-tuong-kich-ban-storyboard',
+    serviceLabel: 'Kịch bản truyện, tình huống học tập',
+    mediaType: 'storyboard-preview',
+    resourcePath: '/assets/demos/edu-storyboard.webp',
+    demoLabel: 'Demo minh họa',
+    status: 'Bảng phân cảnh 4 khung hình cho tình huống học tập',
+    featuredOnHome: false,
+    visualData: {
+      eyebrow: 'KỊCH BẢN & STORYBOARD • TÌNH HUỐNG HỌC TẬP',
+      headline: 'Việc nhỏ, trường xanh',
+      subheadline: 'Một mạch truyện ngắn giúp học sinh quan sát, trao đổi và chốt hành động cụ thể.',
+      metricsOrPoints: [
+        'Mở đầu bằng tình huống gần gũi để gợi thảo luận',
+        'Phân cảnh rõ ràng: phát hiện – hành động – thay đổi',
+        'Có thể phát triển thành video, tranh minh họa hoặc hoạt động trên lớp',
+      ],
+      accentTag: 'Storyboard 4 khung',
+    },
+    assetGenerationPrompt: {
+      missingAssetDescription: 'Storyboard 4 khung cho tình huống học tập có nhân vật và hành động xuyên suốt',
+      recommendedTool: 'Phác thảo tay / Figma / Illustrator',
+      aspectRatio: '16:9',
+      promptText:
+        'Four-panel educational storyboard about Vietnamese school children finding a plastic bottle, sorting it for recycling, and celebrating a clean green schoolyard; warm storybook illustration, consistent characters, clear visual sequence --ar 16:9',
     },
   },
   {

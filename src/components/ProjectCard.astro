@@ -51,7 +51,7 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
                 <button type="button" class="video-control-btn" data-video-mute aria-label="Bật hoặc tắt âm thanh">🔊</button>
               </div>
             </div>
-            {item.resourcePath && (
+            {item.showMediaSwitcher && item.resourcePath && (
               <div class="project-card__media-view project-card__media-view--image" data-view="image" hidden>
                 <img
                   src={item.resourcePath}
@@ -64,7 +64,7 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
                 />
               </div>
             )}
-            <div class="project-card__media-switcher">
+            {item.showMediaSwitcher && <div class="project-card__media-switcher">
               <button
                 type="button"
                 class="media-switch-btn is-active"
@@ -81,7 +81,7 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
               >
                 🖼 Storyboard
               </button>
-            </div>
+            </div>}
           </div>
         ) : isImagePreview ? (
           <img
