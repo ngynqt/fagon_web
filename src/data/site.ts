@@ -56,7 +56,7 @@ export const siteConfig: SiteConfig = {
     facebookUrl: 'https://www.facebook.com/fagonlab',
     facebookLabel: 'facebook.com/fagonlab',
     telegramPhone: '0367931045',
-    telegramNote: 'Tìm qua số điện thoại trên Telegram (chưa dùng username công khai).',
+    telegramNote: 'Tìm kiếm và nhắn tin trực tiếp qua số điện thoại trên Telegram.',
   },
   founderStory: {
     authorLabel: 'Người sáng lập Fagon',

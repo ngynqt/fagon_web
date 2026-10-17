@@ -78,6 +78,10 @@ def run_checks(base_url: str):
         print("✓ 6. Bộ lọc sản phẩm mẫu trên trang chủ hoạt động chính xác.")
 
         page.goto(f"{base_url}/giao-vien", wait_until="networkidle")
+        demo_btn = page.locator("[data-service-demo='web-tro-choi-giao-vien']").first
+        if demo_btn.is_visible():
+            demo_btn.click()
+            page.wait_for_timeout(300)
         correct_indices = [0, 1, 2, 1]
         for idx, ans in enumerate(correct_indices):
             page.locator(f"#game-options-list .edu-game-option[data-option-index='{ans}']").click()
@@ -95,6 +99,10 @@ def run_checks(base_url: str):
         print("✓ 7. Trò chơi tương tác mẫu (/giao-vien) chấm đáp án đúng/sai, tính điểm 4/4 và chơi lại từ đầu hoạt động thật.")
 
         page.goto(f"{base_url}/nguoi-ban-hang", wait_until="networkidle")
+        ba_btn = page.locator("[data-service-demo='anh-nguoi-mau-ai']").first
+        if ba_btn.is_visible():
+            ba_btn.click()
+            page.wait_for_timeout(300)
         page.locator("[data-ba-preset='0']").click()
         assert page.locator("#ba-range-value-text").inner_text() == "0%"
         page.locator("#ba-mode-side-btn").click()

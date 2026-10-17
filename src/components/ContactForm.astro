@@ -13,7 +13,6 @@ const { defaultAudienceId = 'khac', defaultServiceId = '' } = Astro.props;
 const formProvider = import.meta.env.PUBLIC_FORM_PROVIDER || '';
 const formEndpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || '';
 const web3FormsKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY || '';
-const isProviderConfigured = Boolean(formEndpoint || web3FormsKey);
 ---
 
 <section class="section" id="yeu-cau-tu-van" aria-labelledby="form-section-title">
@@ -55,7 +54,7 @@ const isProviderConfigured = Boolean(formEndpoint || web3FormsKey);
             </li>
             <li>
               <strong>Telegram:</strong> <span>{siteConfig.contact.telegramPhone}</span>{' '}
-              <span class="form-sidebar__muted">(chưa dùng username)</span>
+              <span class="form-sidebar__muted">(kết nối qua SĐT)</span>
             </li>
           </ul>
         </div>
@@ -63,14 +62,6 @@ const isProviderConfigured = Boolean(formEndpoint || web3FormsKey);
 
       <!-- Right Column: Interactive Form -->
       <div class="form-card">
-        {
-          !isProviderConfigured && (
-            <div class="form-config-banner" role="note" data-testid="form-unconfigured-notice">
-              <strong>Trạng thái kết nối biểu mẫu:</strong> Hiện đang ở chế độ chờ cấu hình khóa nhận đơn (<code>PUBLIC_WEB3FORMS_ACCESS_KEY</code> hoặc <code>PUBLIC_FORM_ENDPOINT</code> gửi về <strong>{siteConfig.contact.email}</strong>). Bạn vẫn có thể điền đầy đủ bên dưới để kiểm tra hợp lệ, sao chép bản tóm tắt yêu cầu hoặc chuyển sang gửi Email / Facebook dự phòng.
-            </div>
-          )
-        }
-
         <form
           id="fagon-inquiry-form"
           class="inquiry-form"
@@ -662,9 +653,9 @@ const isProviderConfigured = Boolean(formEndpoint || web3FormsKey);
           statusPanel.className = 'form-status-panel is-unconfigured';
           statusPanel.setAttribute('data-form-result', 'unconfigured');
           statusTitle.textContent =
-            'Biểu mẫu chưa kết nối máy chủ nhận đơn — Nội dung của bạn đã được giữ nguyên';
+            'Nội dung yêu cầu của bạn đã được lưu sẵn';
           statusMsg.textContent =
-            'Website hiện chưa được gắn khóa nhận biểu mẫu tự động (PUBLIC_WEB3FORMS_ACCESS_KEY hoặc PUBLIC_FORM_ENDPOINT). Để không mất thời gian nhập lại, bạn hãy bấm "Sao chép toàn bộ nội dung vừa nhập" để gửi qua Facebook / Telegram (0367931045) hoặc bấm gửi qua ứng dụng Email bên dưới:';
+            'Để Fagon tiếp nhận và phản hồi nhanh nhất, bạn hãy bấm "Sao chép toàn bộ nội dung vừa nhập" để gửi qua Telegram (0367931045), tin nhắn Facebook hoặc bấm gửi trực tiếp qua ứng dụng Email bên dưới:';
           fallbackActions.hidden = false;
         }
         return;
@@ -838,16 +829,6 @@ const isProviderConfigured = Boolean(formEndpoint || web3FormsKey);
     border-radius: var(--radius-lg);
     padding: clamp(1.35rem, 3vw, 2.25rem);
     box-shadow: var(--shadow-card);
-  }
-
-  .form-config-banner {
-    background-color: var(--color-cream-alt);
-    border: 1.5px dashed var(--color-ink);
-    border-radius: var(--radius-sm);
-    padding: 0.85rem 1.1rem;
-    font-size: 0.84rem;
-    color: var(--color-ink);
-    margin-bottom: 1.5rem;
   }
 
   .hp-field {

@@ -14,9 +14,8 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
 
 <article class="card project-card" data-demo-code={item.code}>
   <div class="project-card__main">
-    <!-- Top Meta Bar: Code + Strict Demo Label (Section 9) -->
+    <!-- Demo label -->
     <div class:list={['project-card__meta', { 'project-card__meta--uniform': uniformMeta }]}>
-      <span class="project-card__code">Mã: {item.code}</span>
       <span
         class:list={[
           'badge',
@@ -160,13 +159,6 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
 
   .project-card__meta--uniform {
     min-height: 2.2rem;
-  }
-
-  .project-card__code {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--color-text-muted);
-    font-family: monospace;
   }
 
   .project-card__media {
