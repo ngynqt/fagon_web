@@ -144,7 +144,7 @@ export const audiences: AudienceConfig[] = [
         linkedServiceId: 'banner-poster-infographic',
       },
     ],
-    demoIds: ['demo-teacher-interactive-game', 'demo-teacher-slide-deck', 'demo-teacher-storyboard', 'demo-teacher-learning-storyboard'],
+    demoIds: ['demo-teacher-interactive-game', 'demo-teacher-slide-deck', 'demo-teacher-storyboard', 'demo-teacher-learning-storyboard', 'demo-teacher-green-class-poster'],
     processSteps: [
       {
         stepNumber: '01',

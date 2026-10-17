@@ -22,6 +22,7 @@ export interface PortfolioItem {
   videoPath?: string;
   posterPath?: string;
   showMediaSwitcher?: boolean;
+  mediaFit?: 'cover' | 'contain';
   demoLabel: DemoLabelType;
   status: string;
   liveExperienceAnchor?: string; // Only present when an actual interactive feature exists on the page
@@ -177,6 +178,40 @@ export const portfolioItems: PortfolioItem[] = [
       aspectRatio: '16:9',
       promptText:
         'Four-panel educational storyboard about Vietnamese school children finding a plastic bottle, sorting it for recycling, and celebrating a clean green schoolyard; warm storybook illustration, consistent characters, clear visual sequence --ar 16:9',
+    },
+  },
+  {
+    code: 'FG-EDU-05',
+    id: 'demo-teacher-green-class-poster',
+    title: 'Poster thông báo lớp học: Lớp mầm xanh',
+    description:
+      'Poster thông báo hoạt động “Bé ươm mầm xanh” dành cho phụ huynh và học sinh: thông điệp rõ ràng, lịch trình dễ xem và hình minh họa thân thiện.',
+    audienceIds: ['giao-vien'],
+    serviceId: 'banner-poster-infographic',
+    serviceLabel: 'Poster, banner, thông báo lớp học',
+    mediaType: 'graphic-preview',
+    resourcePath: '/assets/demos/teacher-green-class-poster.png',
+    mediaFit: 'contain',
+    demoLabel: 'Demo minh họa',
+    status: 'Poster thông báo hoạt động lớp học dành cho phụ huynh',
+    featuredOnHome: false,
+    visualData: {
+      eyebrow: 'POSTER LỚP HỌC • THÔNG BÁO GỬI BA MẸ',
+      headline: 'Lớp mầm xanh — Bé ươm mầm xanh',
+      subheadline: 'Truyền tải đầy đủ nội dung hoạt động, thời gian, địa điểm và phần chuẩn bị trong một bố cục gần gũi, dễ đọc.',
+      metricsOrPoints: [
+        'Thông tin chính được phân cấp rõ để phụ huynh xem nhanh',
+        'Hình minh họa vui tươi, phù hợp hoạt động mầm non',
+        'Dùng được cho bản in, nhóm lớp và bài đăng mạng xã hội',
+      ],
+      accentTag: 'Poster thông báo lớp học',
+    },
+    assetGenerationPrompt: {
+      missingAssetDescription: 'Poster thông báo hoạt động xanh cho lớp mầm non',
+      recommendedTool: 'Canva / Illustrator / Figma',
+      aspectRatio: '4:5',
+      promptText:
+        'Cheerful Vietnamese kindergarten activity poster about planting seedlings, friendly teachers and children in a green garden, clear event information zones, warm hand-drawn style, high readability --ar 4:5',
     },
   },
   {

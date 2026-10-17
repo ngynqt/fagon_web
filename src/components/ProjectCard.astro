@@ -60,7 +60,7 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
                   height="500"
                   loading="lazy"
                   decoding="async"
-                  class="project-card__img"
+                  class:list={['project-card__img', { 'project-card__img--contain': item.mediaFit === 'contain' }]}
                 />
               </div>
             )}
@@ -91,7 +91,7 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
             height="500"
             loading={priorityLoad ? 'eager' : 'lazy'}
             decoding="async"
-            class="project-card__img"
+            class:list={['project-card__img', { 'project-card__img--contain': item.mediaFit === 'contain' }]}
           />
         ) : (
           <div class="project-card__visual-box">
@@ -186,6 +186,10 @@ const isImagePreview = /\.(webp|png|svg|jpg|jpeg)$/i.test(item.resourcePath);
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .project-card__img--contain {
+    object-fit: contain;
   }
 
   .project-card__visual-box {
