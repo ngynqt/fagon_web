@@ -87,7 +87,7 @@ export const portfolioItems: PortfolioItem[] = [
     serviceId: 'slide-bai-giang-giao-vien',
     serviceLabel: 'Slide bài giảng trực quan',
     mediaType: 'slide-preview',
-    resourcePath: '/assets/demos/edu-slide-preview.webp',
+    resourcePath: '/assets/demos/teacher-water-cycle-slide-preview.png',
     demoLabel: 'Demo minh họa',
     status: 'Bố cục slide bài giảng chuẩn 16:9 thiết kế trực quan',
     featuredOnHome: false,
