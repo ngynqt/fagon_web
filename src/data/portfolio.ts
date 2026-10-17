@@ -215,6 +215,40 @@ export const portfolioItems: PortfolioItem[] = [
     },
   },
   {
+    code: 'FG-EDU-06',
+    id: 'demo-teacher-squirrel-character-sheet',
+    title: 'Nhân vật hoạt hình: Sóc Hạt Dẻ',
+    description:
+      'Character sheet minh họa nhân vật Sóc Hạt Dẻ với bảng màu, các góc nhìn, biểu cảm và chi tiết thiết kế đồng bộ để sử dụng xuyên suốt bài học.',
+    audienceIds: ['giao-vien'],
+    serviceId: 'anh-ai-nhan-vat-hoat-hinh',
+    serviceLabel: 'Ảnh và nhân vật hoạt hình',
+    mediaType: 'graphic-preview',
+    resourcePath: '/assets/demos/teacher-squirrel-character-sheet.jpg',
+    mediaFit: 'contain',
+    demoLabel: 'Demo minh họa',
+    status: 'Character sheet nhân vật hoạt hình cho bài giảng',
+    featuredOnHome: false,
+    visualData: {
+      eyebrow: 'NHÂN VẬT HOẠT HÌNH • CHARACTER SHEET',
+      headline: 'Sóc Hạt Dẻ — nhân vật đồng hành trong bài học',
+      subheadline: 'Một hệ nhân vật nhất quán giúp câu chuyện, hình minh họa và hoạt động học tập dễ nhận biết hơn.',
+      metricsOrPoints: [
+        'Các góc nhìn và chi tiết thiết kế nhất quán',
+        'Ma trận biểu cảm phù hợp nhiều tình huống kể chuyện',
+        'Sẵn sàng phát triển thành tranh, slide hoặc video hoạt hình',
+      ],
+      accentTag: 'Character sheet',
+    },
+    assetGenerationPrompt: {
+      missingAssetDescription: 'Bộ character sheet nhân vật hoạt hình cho bài học',
+      recommendedTool: 'Illustrator / Photoshop / Procreate',
+      aspectRatio: '4:3',
+      promptText:
+        'Vietnamese educational cartoon squirrel mascot character sheet, consistent front, side and back views, facial expressions, color palette and detail callouts; clean friendly illustration for classroom storytelling --ar 4:3',
+    },
+  },
+  {
     code: 'FG-SHOP-01',
     id: 'demo-shop-before-after',
     title: 'Before / After: Từ ảnh chụp treo móc sang ảnh lên dáng người mẫu',
