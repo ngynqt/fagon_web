@@ -89,6 +89,13 @@ const { demoItems } = Astro.props;
     const openButtons = document.querySelectorAll<HTMLButtonElement>('[data-service-demo]');
     let opener: HTMLButtonElement | null = null;
 
+    const stopDemoVideos = () => {
+      stage?.querySelectorAll<HTMLVideoElement>('video').forEach((video) => {
+        video.pause();
+        video.currentTime = 0;
+      });
+    };
+
     const placeDemo = (serviceId: string, trigger?: HTMLButtonElement) => {
       opener = trigger ?? opener;
       const panel = stage?.querySelector<HTMLElement>(`[data-demo-panel="${serviceId}"]`);
@@ -110,7 +117,11 @@ const { demoItems } = Astro.props;
 
     openButtons.forEach((button) => button.addEventListener('click', () => placeDemo(button.dataset.serviceDemo || '', button)));
     dialog?.querySelector<HTMLButtonElement>('[data-demo-dialog-close]')?.addEventListener('click', () => dialog.close());
-    dialog?.addEventListener('close', () => { if (stage) stage.hidden = true; opener?.focus(); });
+    dialog?.addEventListener('close', () => {
+      stopDemoVideos();
+      if (stage) stage.hidden = true;
+      opener?.focus();
+    });
 
     document.querySelectorAll<HTMLElement>('[data-slide-demo]').forEach((demo) => {
       const pages = Array.from(demo.querySelectorAll<HTMLElement>('[data-slide-page]'));
