@@ -131,3 +131,4 @@ git remote add origin https://github.com/<ten-tai-khoan>/<ten-kho-rieng-tu>.git
 git push -u origin main
 ```
 *(File `.gitignore` đã được cấu hình sẵn để không bao giờ đẩy nhầm `node_modules`, `dist` hoặc file `.env` lên Git).*
+<!-- Redeploy after configuring Web3Forms -->
